@@ -1,0 +1,4 @@
+get ip: ipconfig getifaddr en0  # For Wi-Fi users
+enter in mobile browser: http://YOUR_LOCAL_IP:3000
+
+newSecurePass123

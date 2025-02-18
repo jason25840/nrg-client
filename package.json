@@ -1,0 +1,46 @@
+{
+  "name": "nrg_annex",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.5.0",
+    "@tabler/icons-react": "^3.30.0",
+    "@tailwindcss/postcss": "^4.0.3",
+    "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
+    "express-validator": "^7.2.1",
+    "framer-motion": "^11.16.4",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.4",
+    "next": "15.1.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "tailwind-merge": "^3.0.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.4",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "opener": "^1.5.2",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5"
+  }
+}

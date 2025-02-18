@@ -1,0 +1,227 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes border-glow {
+  0% {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 6px var(--primary-blue);
+  }
+  25% {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 6px var(--primary-green);
+  }
+  50% {
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 6px var(--accent-orange);
+  }
+  75% {
+    border-color: var(--accent-pink);
+    box-shadow: 0 0 6px var(--accent-pink);
+  }
+  100% {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 6px var(--primary-blue);
+  }
+}
+
+.animate-border-glow {
+  animation: border-glow 3s infinite linear;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 12px var(--primary-blue), 0 0 24px var(--primary-green),
+      0 0 36px var(--accent-orange);
+    opacity: 1;
+    filter: blur(6px);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--primary-green), 0 0 40px var(--accent-orange),
+      0 0 50px var(--primary-blue);
+    opacity: 1;
+    filter: blur(8px);
+  }
+  100% {
+    box-shadow: 0 0 12px var(--primary-blue), 0 0 24px var(--primary-green),
+      0 0 36px var(--accent-orange);
+    opacity: 1;
+    filter: blur(6px);
+  }
+}
+
+.animate-glow {
+  animation: glow 2.5s infinite alternate ease-in-out;
+}
+
+/* 🌍 Root Theme Colors */
+:root {
+  --background-light: #f8f9fa; /* Off-White */
+  --background-dark: #0a0a0a; /* Dark Mode */
+  --foreground-light: #333333; /* Charcoal Black */
+  --foreground-dark: #ededed; /* Light Gray for Dark Mode */
+
+  /* 🎨 Brand Colors */
+  --primary-blue: #4d8084; /* Even Darker Soft Blue */
+  --primary-green: #5a9b86; /* Even Darker Pale Green */
+  --accent-pink: #b66b7f; /* Even Darker Blush Pink */
+  --accent-orange: #d18b4e; /* Even Darker Light Orange */
+
+  /* 🌙 Dark Mode */
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--background-dark);
+    --foreground: var(--foreground-dark);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--background-dark);
+    --foreground: var(--foreground-dark);
+  }
+}
+
+/* ✨ Global Styles */
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Merriweather', serif;
+  @apply text-base leading-relaxed; /* Default Tailwind Typography */
+}
+
+/* 📌 Headings */
+h1,
+h2,
+h3 {
+  font-family: 'Futura PT', sans-serif;
+  font-weight: 700;
+}
+
+p,
+span {
+  font-family: 'Merriweather', serif;
+}
+
+/* 🔘 Buttons */
+button {
+  font-family: 'Roboto', sans-serif;
+  @apply px-4 py-2 rounded-md font-medium;
+  cursor: pointer;
+}
+
+/* 🔗 Links */
+a {
+  color: var(--primary-blue);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 📍 Form Inputs */
+input,
+textarea,
+select {
+  font-family: 'Roboto', sans-serif;
+  @apply px-3 py-2 border rounded-lg w-full;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--primary-blue);
+}
+
+/* 🚀 Layout Helpers */
+.container {
+  width: 100%; /* ✅ Ensures full width */
+  max-width: 100vw; /* ✅ Prevents unwanted margins */
+  margin: 0;
+  padding: 0; /* ✅ Removes default spacing */
+}
+
+.section {
+  @apply py-10;
+}
+
+/* 🎨 Utility Classes */
+.text-primary {
+  color: var(--primary-blue);
+}
+
+.bg-primary {
+  background-color: var(--primary-green);
+}
+
+.bg-accent {
+  background-color: var(--accent-pink);
+}
+
+.border-primary {
+  border-color: var(--primary-blue);
+}
+
+/* 🌓 Dark Mode Tweaks */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--background-dark);
+    color: var(--foreground-dark);
+  }
+
+  /* Light Mode: Opaque Foreground */
+  .button-bg-light {
+    background-color: rgba(
+      237,
+      237,
+      237,
+      0.2
+    ); /* --foreground-dark with 20% opacity */
+  }
+
+  /* Dark Mode: Opaque Background */
+  @media (prefers-color-scheme: dark) {
+    .button-bg-light {
+      background-color: rgba(
+        248,
+        249,
+        250,
+        0.15
+      ); /* --background-light with 15% opacity */
+    }
+  }
+}
+
+/* Add this to globals.css */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; /* Ensure it's behind other content */
+}
+
+.video-overlay {
+  position: fixed; /* Change to fixed to ensure full coverage */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Optional: Add a dark overlay for better text visibility */
+  z-index: 0;
+}
