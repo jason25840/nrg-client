@@ -1,11 +1,14 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PursuitSelector from './PursuitSelector';
 import AccomplishmentForm from './AccomplishmentForm';
 import SocialMediaLinks from './SocialMediaLinks';
 import { updateProfile, createProfile } from '../../redux/slices/profileSlice';
+import ModalWithForm from '../ui/ModalWithForm';
 
-export default function ProfileForm({ initialData }) {
+export default function ProfileForm({ initialData, handleActiveModalClose }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
@@ -41,10 +44,17 @@ export default function ProfileForm({ initialData }) {
       // Create new profile
       dispatch(createProfile({ userId: user.id, profileData }));
     }
+
+    handleActiveModalClose(); // Close modal after submission
   };
 
   return (
-    <form className='space-y-4'>
+    <ModalWithForm
+      title={initialData ? 'Edit Profile' : 'Create Profile'}
+      onSubmit={handleSubmit}
+      handleActiveModalClose={handleActiveModalClose}
+      buttonText={initialData ? 'Update Profile' : 'Create Profile'}
+    >
       {/* Pursuit Selector */}
       <PursuitSelector
         value={profileData.pursuits}
@@ -81,15 +91,6 @@ export default function ProfileForm({ initialData }) {
           }
         />
       )}
-
-      {/* Submit Button */}
-      <button
-        type='submit'
-        className='btn bg-blue-500 text-white px-4 py-2 rounded-lg'
-        onClick={handleSubmit}
-      >
-        {initialData ? 'Update Profile' : 'Create Profile'}
-      </button>
-    </form>
+    </ModalWithForm>
   );
 }
