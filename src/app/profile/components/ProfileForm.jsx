@@ -6,7 +6,7 @@ import PursuitSelector from './PursuitSelector';
 import AccomplishmentForm from './AccomplishmentForm';
 import SocialMediaLinks from './SocialMediaLinks';
 import { updateProfile, createProfile } from '../../redux/slices/profileSlice';
-import ModalWithForm from '../components/ui/ModalWithForm';
+import ModalWithForm from '../../components/ui/ModalWithForm';
 
 export default function ProfileForm({ initialData, handleActiveModalClose }) {
   const dispatch = useDispatch();
