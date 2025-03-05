@@ -5,7 +5,7 @@ import { Card } from './Card';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { carouselItems } from '@/app/data/carouselData';
 
-export const Carousel = ({ items }) => {
+export const Carousel = () => {
   const carouselRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);

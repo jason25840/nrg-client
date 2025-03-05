@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { signin, signup } from '../redux/slices/authSlice';
+import PageLayout from '../components/ui/PageLayout';
 import ChatInterface from './components/ChatInterface';
 
 export default function SocialNetwork() {
@@ -21,24 +22,26 @@ export default function SocialNetwork() {
 
   if (!user) {
     return (
-      <div className='max-w-md mx-auto mt-10'>
-        <h1 className='text-3xl font-bold mb-4'>Join the Conversation</h1>
-        <form onSubmit={handleLogin} className='space-y-4'>
-          <input
-            type='text'
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder='Enter your username'
-            className='w-full p-2 border rounded-lg'
-          />
-          <button
-            type='submit'
-            className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg'
-          >
-            Join Chat
-          </button>
-        </form>
-      </div>
+      <PageLayout>
+        <div className='max-w-md mx-auto mt-10'>
+          <h1 className='text-5xl font-bold mb-4'>Join the Conversation</h1>
+          <form onSubmit={handleLogin} className='space-y-4'>
+            <input
+              type='text'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder='Enter your username'
+              className='w-full p-2 border rounded-lg'
+            />
+            <button
+              type='submit'
+              className='w-full bg-blue-500 text-white px-4 py-2 rounded-lg'
+            >
+              Join Chat
+            </button>
+          </form>
+        </div>
+      </PageLayout>
     );
   }
 

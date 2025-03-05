@@ -55,14 +55,14 @@ export default function Home() {
           variant='primary'
           className='z-10'
         >
-          Go to Your Dashboard
+          Sign In
         </Button>
       </div>
 
       {/* 🔹 Weather Section */}
       <div className='relative z-20 w-full bg-gray-100 py-8 md:py-12'>
         <div className='flex flex-col items-center justify-center w-full py-8 md:py-12'>
-          <h2 className='text-2xl md:text-3xl font-bold text-black mb-10'>
+          <h2 className='text-2xl md:text-3xl font-bold text-black mb-6'>
             Current Weather in the Playground
           </h2>
           {loading ? <p>Loading...</p> : <WeatherCard weather={weather} />}

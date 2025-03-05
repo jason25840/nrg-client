@@ -1,87 +1,39 @@
 'use client';
-import React, { useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { openCard, closeCard } from '../../redux/slices/carouselSlice';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useOutsideClick } from '../../hooks/useOutsideClick';
+import React from 'react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 
-export const Card = ({ card, index }) => {
-  const dispatch = useDispatch();
-  const activeCardIndex = useSelector(
-    (state) => state.carousel.activeCardIndex
-  );
-  const isActive = activeCardIndex === index;
-  const containerRef = useRef(null);
-
-  useOutsideClick(containerRef, () => dispatch(closeCard()));
-
-  const handleOpen = () => {
-    dispatch(openCard(index));
-  };
-
-  const handleClose = () => {
-    dispatch(closeCard());
-  };
-
+export const Card = ({ card }) => {
   return (
-    <>
-      <AnimatePresence>
-        {isActive && (
-          <div className='fixed inset-0 h-screen z-50 overflow-auto'>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className='bg-black/80 backdrop-blur-lg h-full w-full fixed inset-0'
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              ref={containerRef}
-              className='max-w-5xl mx-auto bg-white dark:bg-neutral-900 h-fit z-[60] my-10 p-4 md:p-10 rounded-3xl relative'
-            >
-              <button
-                className='absolute top-4 right-4 h-8 w-8 bg-black dark:bg-white rounded-full flex items-center justify-center'
-                onClick={handleClose}
-              >
-                ✖
-              </button>
-              <p className='text-base font-medium text-black dark:text-white'>
-                {card.category}
-              </p>
-              <p className='text-2xl md:text-5xl font-semibold text-neutral-700 mt-4 dark:text-white'>
-                {card.title}
-              </p>
-              <div className='py-10'>{card.content}</div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      <motion.button
-        onClick={handleOpen}
-        className='rounded-3xl bg-gray-100 dark:bg-neutral-900 h-80 w-56 md:h-[40rem] md:w-96 overflow-hidden flex flex-col items-center relative z-10'
+    <Link href={card.link} passHref>
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.98 }}
+        className='group relative rounded-3xl bg-gray-100 dark:bg-neutral-900 h-80 w-56 md:h-[40rem] md:w-96 overflow-hidden flex flex-col items-center cursor-pointer shadow-lg transition-all duration-300'
       >
         {/* Background Overlay */}
-        <div className='absolute h-full top-0 inset-x-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-30 pointer-events-none' />
+        <div className='absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-30 pointer-events-none' />
 
         {/* Title Positioned at the Top */}
         <div className='relative z-40 p-4 md:p-6 flex flex-col items-center text-center w-full'>
-          <p className='text-white text-xl md:text-3xl font-semibold animate-pulse'>
+          <p className='text-white text-xl md:text-3xl font-semibold group-hover:scale-105 transition-all'>
             {card.title}
           </p>
         </div>
 
         {/* Image */}
         <Image
-          src={card.src ? card.src : '/default-placeholder.jpg'}
+          src={card.src || '/default-placeholder.jpg'}
           alt={card.title || 'Default Title'}
           fill
+          sizes='(max-width: 600px) 100px, (max-width: 1024px) 160px, 200px'
           className='object-cover absolute z-10 inset-0'
         />
-      </motion.button>
-    </>
+
+        {/* Subtle Focus on Hover */}
+        <div className='absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-3xl' />
+      </motion.div>
+    </Link>
   );
 };

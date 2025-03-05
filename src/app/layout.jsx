@@ -19,7 +19,9 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${inter.className} relative bg-transparent`}>
         <Providers>
-          <AuthWrapper>{children}</AuthWrapper> {/* ✅ Handles Sidebar/Auth */}
+          <AuthWrapper>
+            <main className='flex-1'>{children}</main>
+          </AuthWrapper>
         </Providers>
       </body>
     </html>

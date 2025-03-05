@@ -6,11 +6,10 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import {
-  IconHome,
   IconArticle,
   IconCalendar,
+  IconMap,
   IconUsers,
-  IconSettings,
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
@@ -22,10 +21,10 @@ export default function Sidebar() {
     'https://media.istockphoto.com/id/2149530993/photo/digital-human-head-concept-for-ai-metaverse-and-facial-recognition-technology.webp?a=1&b=1&s=612x612&w=0&k=20&c=nyP4c-s5cSZy1nv1K0xn1ynC-Xuc1sY4Y29ZQqcrztA='; // Use default if no avatar
 
   const links = [
-    { label: 'Dashboard', href: '/dashboard', icon: <IconHome /> },
     { label: 'Blog', href: '/blog', icon: <IconArticle /> },
     { label: 'Events', href: '/events', icon: <IconCalendar /> },
-    { label: 'Socials', href: '/socials', icon: <IconUsers /> },
+    { label: 'Map', href: '/adventure-map', icon: <IconMap /> },
+    { label: 'Connect', href: '/adventure-sports', icon: <IconUsers /> },
   ];
 
   return (
@@ -37,14 +36,16 @@ export default function Sidebar() {
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
-      {/* Logo */}
+      {/* Logo (Links to Home) */}
       <div className='flex items-center justify-center mb-6'>
-        <Image
-          src='/NRG_Annex.svg'
-          alt='Logo'
-          width={isExpanded ? 120 : 40}
-          height={40}
-        />
+        <Link href='/'>
+          <Image
+            src='/NRG_Playground_Logo.svg'
+            alt='Logo'
+            width={isExpanded ? 120 : 40}
+            height={40}
+          />
+        </Link>
       </div>
 
       {/* Navigation Links */}

@@ -4,22 +4,14 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProfile } from '../redux/slices/profileSlice';
-import ProfileSummary from './components/ProfileSummary';
-import ConnectionGrid from './components/ConnectionGrid';
-import { mockArticles } from '../data/mockData/articles';
-import { mockEvents } from '../data/mockData/events';
-import { mockGoals } from '../data/mockData/goals';
-import { mockConnections } from '../data/mockData/connections';
 import { motion } from 'framer-motion';
-
-// Import missing components if needed
-// import SavedArticles from './components/SavedArticles';
-// import UpcomingEvents from './components/UpcomingEvents';
-// import GoalsProjects from './components/GoalsProjects';
+import Sidebar from '../components/ui/Sidebar';
+import ProfileSummary from './components/ProfileSummary';
 
 export default function Dashboard() {
   const dispatch = useDispatch();
   const { user, status, error } = useSelector((state) => state.auth);
+  const { profile } = useSelector((state) => state.profile);
 
   useEffect(() => {
     if (status === 'succeeded' && user?.id) {
@@ -31,7 +23,7 @@ export default function Dashboard() {
   if (status === 'failed') return <p>Error: {error}</p>;
   if (!user)
     return (
-      <p className='text-black'>
+      <p className='text-foreground-light'>
         Please{' '}
         <Link href='/signin' className='text-primary-blue hover:underline'>
           Sign in
@@ -41,81 +33,102 @@ export default function Dashboard() {
     );
 
   return (
-    <div className='container mx-auto p-6 grid gap-4 auto-rows-[minmax(200px,auto)] grid-cols-1 md:grid-cols-3 lg:grid-cols-4'>
-      {/* Profile Summary - Fixed Width */}
-      <motion.div
-        className='md:col-span-1 bg-gray-100 dark:bg-neutral-800 text-black dark:text-white p-4 rounded-lg shadow-md'
-        whileHover={{ scale: 1.02 }}
-      >
-        <ProfileSummary />
-      </motion.div>
+    <div className='flex'>
+      {/* ✅ Use Updated Sidebar Component */}
+      <Sidebar
+        logo='/NRG_Playground_Logo.svg'
+        links={[
+          { label: 'Blog', href: '/blog', icon: 'IconArticle' },
+          { label: 'Events', href: '/events', icon: 'IconCalendar' },
+          { label: 'Adventure Map', href: '/adventure-map', icon: 'IconMap' },
+          {
+            label: 'Adventure Sports',
+            href: '/adventure-sports',
+            icon: 'IconUsers',
+          },
+        ]}
+      />
 
-      {/* Saved Articles */}
-      {mockArticles.length > 0 && (
+      {/* ✅ Main Dashboard Content (Aligned with Sidebar) */}
+      <div className='flex-1 transition-all duration-300 ease-in-out p-6 ml-16 md:ml-20 lg:ml-24'>
         <motion.div
-          className='md:col-span-2 lg:col-span-2 bg-white dark:bg-neutral-900 text-black dark:text-white p-4 rounded-lg shadow-md'
+          className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
+          whileHover={{ scale: 1.02 }}
+        >
+          <ProfileSummary profile={profile} />
+        </motion.div>
+
+        {/* ✅ Bookmarked Articles */}
+        <motion.div
+          className='mt-6 bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
           whileHover={{ scale: 1.02 }}
         >
           <h3 className='text-lg md:text-xl font-semibold mb-2'>
-            Saved Articles
+            Bookmarked Articles
           </h3>
           <ul className='text-sm md:text-base'>
-            {mockArticles.map((article, index) => (
-              <li key={index}>
-                {article.title} - {article.snippet}
-              </li>
-            ))}
+            {profile?.bookmarkedArticles?.length > 0 ? (
+              profile.bookmarkedArticles.map((article, index) => (
+                <li key={index}>{article.title}</li>
+              ))
+            ) : (
+              <p>No bookmarked articles.</p>
+            )}
           </ul>
         </motion.div>
-      )}
 
-      {/* Goals & Projects */}
-      {mockGoals.length > 0 && (
+        {/* ✅ Top Projects */}
+        <motion.div className='mt-6 bg-background-light text-foreground-light p-4 rounded-lg shadow-md'>
+          <h3 className='text-lg md:text-xl font-semibold mb-2'>
+            Top Projects
+          </h3>
+          <ul className='text-sm md:text-base'>
+            {profile?.projects?.length > 0 ? (
+              profile.projects.map((project, index) => (
+                <li key={index}>
+                  {project.name} - {project.description}
+                </li>
+              ))
+            ) : (
+              <p>
+                No projects added yet.{' '}
+                <Link
+                  href='/add-project'
+                  className='text-primary-blue underline'
+                >
+                  Add one now
+                </Link>
+              </p>
+            )}
+          </ul>
+        </motion.div>
+
+        {/* ✅ Saved Events */}
         <motion.div
-          className='md:col-span-1 lg:col-span-1 bg-gray-200 dark:bg-neutral-800 text-black dark:text-white p-4 rounded-lg shadow-md'
+          className='mt-6 bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
           whileHover={{ scale: 1.02 }}
         >
           <h3 className='text-lg md:text-xl font-semibold mb-2'>
-            Goals & Projects
+            Saved Events
           </h3>
           <ul className='text-sm md:text-base'>
-            {mockGoals.map((goal, index) => (
-              <li key={index}>
-                {goal.goal} - {goal.progress}
-              </li>
-            ))}
+            {profile?.savedEvents?.length > 0 ? (
+              profile.savedEvents.map((event, index) => (
+                <li key={index}>
+                  {event.name} - {event.date}
+                </li>
+              ))
+            ) : (
+              <p>
+                No saved events yet.{' '}
+                <Link href='/events' className='text-primary-blue underline'>
+                  Explore events
+                </Link>
+              </p>
+            )}
           </ul>
         </motion.div>
-      )}
-
-      {/* Connections - Full Height */}
-      {mockConnections.length > 0 && (
-        <motion.div
-          className='md:col-span-4 lg:col-span-4 bg-white dark:bg-neutral-900 text-black dark:text-white p-4 rounded-lg shadow-md h-full'
-          whileHover={{ scale: 1.02 }}
-        >
-          <ConnectionGrid connections={mockConnections} />
-        </motion.div>
-      )}
-
-      {/* Upcoming Events */}
-      {mockEvents.length > 0 && (
-        <motion.div
-          className='md:col-span-3 lg:col-span-4 bg-gray-100 dark:bg-neutral-800 text-black dark:text-white p-4 rounded-lg shadow-md'
-          whileHover={{ scale: 1.02 }}
-        >
-          <h3 className='text-lg md:text-xl font-semibold mb-2'>
-            Upcoming Events
-          </h3>
-          <ul className='text-sm md:text-base'>
-            {mockEvents.map((event, index) => (
-              <li key={index}>
-                {event.name} - {event.date}
-              </li>
-            ))}
-          </ul>
-        </motion.div>
-      )}
+      </div>
     </div>
   );
 }

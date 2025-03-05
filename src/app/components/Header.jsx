@@ -62,18 +62,18 @@ export default function Header() {
       <div className='flex items-center'>
         <Link href='/'>
           <div className='relative flex items-center justify-center'>
-            {/* Opaque Background - Ensures Visibility */}
-            <div className='absolute inset-0 flex items-center justify-center'>
-              <div className='w-[220px] h-[220px] md:w-[180px] md:h-[180px] sm:w-[120px] sm:h-[120px] bg-accent-orange rounded-full backdrop-blur-md'></div>
+            {/* ✅ Opaque Background - Matches Logo Size at All Screens */}
+            <div className='absolute flex items-center justify-center'>
+              <div className='w-[200px] h-[200px] md:w-[160px] md:h-[160px] max-sm:w-[100px] max-sm:h-[100px] bg-accent-orange rounded-full backdrop-blur-md'></div>
             </div>
 
-            {/* Logo */}
-            <div className='relative w-[200px] h-[200px] md:w-[160px] md:h-[160px] sm:w-[100px] sm:h-[100px]'>
+            {/* ✅ Logo - Scales Properly on Mobile */}
+            <div className='relative w-[200px] h-[200px] md:w-[160px] md:h-[160px] max-sm:w-[100px] max-sm:h-[100px]'>
               <Image
                 src='/NRG_Playground_Logo.svg'
                 alt='NRG Playground Logo'
                 fill
-                sizes='(max-width: 600px) 100px, (max-width: 1024px) 160px, 200px'
+                sizes='(max-width: 640px) 100px, (max-width: 1024px) 160px, 200px'
                 className='object-contain'
                 priority
               />
