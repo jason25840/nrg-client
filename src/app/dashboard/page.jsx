@@ -36,7 +36,7 @@ export default function Dashboard() {
     <div className='flex'>
       {/* ✅ Use Updated Sidebar Component */}
       <Sidebar
-        logo='/NRG_Playground_Logo.svg'
+      /*logo='/NRG_Playground_Logo.svg'
         links={[
           { label: 'Blog', href: '/blog', icon: 'IconArticle' },
           { label: 'Events', href: '/events', icon: 'IconCalendar' },
@@ -46,7 +46,7 @@ export default function Dashboard() {
             href: '/adventure-sports',
             icon: 'IconUsers',
           },
-        ]}
+        ]}*/
       />
 
       {/* ✅ Main Dashboard Content (Aligned with Sidebar) */}
@@ -121,7 +121,10 @@ export default function Dashboard() {
             ) : (
               <p>
                 No saved events yet.{' '}
-                <Link href='/events' className='text-primary-blue underline'>
+                <Link
+                  href='/eventsPage'
+                  className='text-primary-blue underline'
+                >
                   Explore events
                 </Link>
               </p>

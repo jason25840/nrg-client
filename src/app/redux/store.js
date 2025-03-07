@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import profileReducer from './slices/profileSlice';
 import carouselReducer from './slices/carouselSlice';
 import blogReducer from './slices/blogSlice';
+import eventReducer from './slices/eventSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     profile: profileReducer,
     carousel: carouselReducer,
     blog: blogReducer,
+    events: eventReducer,
   },
 });

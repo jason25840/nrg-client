@@ -45,7 +45,7 @@ export default function Header() {
   const navItems = [
     { name: 'Be Social', link: '/social' },
     { name: 'Read Blog', link: '/blog' },
-    { name: 'See Events', link: '/events' },
+    { name: 'See Events', link: '/eventsPage' },
   ];
 
   return (

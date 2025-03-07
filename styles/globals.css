@@ -59,8 +59,8 @@
 :root {
   --background-light: #f8f9fa; /* Off-White */
   --background-dark: #0a0a0a; /* Dark Mode */
-  --foreground-light: #333333; /* Charcoal Black */
-  --foreground-dark: #ededed; /* Light Gray for Dark Mode */
+  --foreground-light: #000000; /* Black for readability */
+  --foreground-dark: #ffffff; /* White for contrast in dark mode */
 
   /* 🎨 Brand Colors */
   --primary-blue: #4d8084; /* Even Darker Soft Blue */
@@ -80,13 +80,6 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--background-dark);
-    --foreground: var(--foreground-dark);
-  }
-}
-
 /* ✨ Global Styles */
 body {
   color: var(--foreground);
@@ -95,20 +88,24 @@ body {
   @apply text-base leading-relaxed; /* Default Tailwind Typography */
 }
 
-/* 📌 Headings */
+/* 📌 Headings & Text */
 h1,
 h2,
-h3 {
-  font-family: 'Futura PT', sans-serif;
-  font-weight: 700;
-}
-
+h3,
+h4,
+h5,
+h6,
 p,
-span {
+span,
+a,
+input,
+textarea,
+select {
+  color: var(--foreground); /* Ensures all text elements follow the theme */
   font-family: 'Merriweather', serif;
 }
 
-/* 🔘 Buttons */
+/* 🔘 Buttons (Preserve Styling) */
 button {
   font-family: 'Roboto', sans-serif;
   @apply px-4 py-2 rounded-md font-medium;
@@ -117,7 +114,6 @@ button {
 
 /* 🔗 Links */
 a {
-  color: var(--primary-blue);
   text-decoration: none;
 }
 
@@ -152,50 +148,11 @@ select:focus {
   @apply py-10;
 }
 
-/* 🎨 Utility Classes */
-.text-primary {
-  color: var(--primary-blue);
-}
-
-.bg-primary {
-  background-color: var(--primary-green);
-}
-
-.bg-accent {
-  background-color: var(--accent-pink);
-}
-
-.border-primary {
-  border-color: var(--primary-blue);
-}
-
 /* 🌓 Dark Mode Tweaks */
 @media (prefers-color-scheme: dark) {
   body {
     background: var(--background-dark);
     color: var(--foreground-dark);
-  }
-
-  /* Light Mode: Opaque Foreground */
-  .button-bg-light {
-    background-color: rgba(
-      237,
-      237,
-      237,
-      0.2
-    ); /* --foreground-dark with 20% opacity */
-  }
-
-  /* Dark Mode: Opaque Background */
-  @media (prefers-color-scheme: dark) {
-    .button-bg-light {
-      background-color: rgba(
-        248,
-        249,
-        250,
-        0.15
-      ); /* --background-light with 15% opacity */
-    }
   }
 }
 

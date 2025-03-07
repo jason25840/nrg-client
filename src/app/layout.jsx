@@ -6,7 +6,7 @@ import AuthWrapper from './AuthWrapper';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'New River Gorge Outdoors',
+  title: 'New River Gorge Playground',
   description: 'Connect with outdoor enthusiasts in the New River Gorge area',
 };
 

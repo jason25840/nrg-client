@@ -22,7 +22,7 @@ export default function Sidebar() {
 
   const links = [
     { label: 'Blog', href: '/blog', icon: <IconArticle /> },
-    { label: 'Events', href: '/events', icon: <IconCalendar /> },
+    { label: 'Events', href: '/eventsPage', icon: <IconCalendar /> },
     { label: 'Map', href: '/adventure-map', icon: <IconMap /> },
     { label: 'Connect', href: '/adventure-sports', icon: <IconUsers /> },
   ];

@@ -33,7 +33,7 @@
     "src/app/types.js",
     "src/app/redux/store.js",
     "src/app/redux/slices/authSlice.js",
-    "src/app/events/page.jsx",
+    "src/app/eventsPage/page.jsx",
     "src/app/components/Header.jsx",
     "src/app/components/Footer.jsx",
     "src/app/pages/social/components/ChatMessage.jsx",

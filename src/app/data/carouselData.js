@@ -26,6 +26,6 @@ export const carouselItems = [
     category: 'Events',
     src: 'https://images.unsplash.com/photo-1633526543814-9718c8922b7a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FsZW5kYXJ8ZW58MHx8MHx8fDA%3D',
     content: 'Discover upcoming events in and around the NRG.',
-    link: '/events',
+    link: '/eventsPage',
   },
 ];
