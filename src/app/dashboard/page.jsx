@@ -1,55 +1,72 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProfile } from '../redux/slices/profileSlice';
 import { motion } from 'framer-motion';
 import Sidebar from '../components/ui/Sidebar';
 import ProfileSummary from './components/ProfileSummary';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import ArticlePopup from '../blog/components/ArticlePopup';
 
 export default function Dashboard() {
   const dispatch = useDispatch();
-  const { user, status, error } = useSelector((state) => state.auth);
-  const { profile } = useSelector((state) => state.profile);
+  const { user, isAuthenticated, status } = useSelector((state) => state.auth);
+  const { profile, status: profileStatus } = useSelector(
+    (state) => state.profile
+  );
+  const [selectedArticle, setSelectedArticle] = useState(null);
 
+  console.log('📌 Dashboard State:', {
+    isAuthenticated,
+    user,
+    profile,
+    status,
+    profileStatus,
+  });
+
+  // ✅ Fetch profile when user is authenticated and profile has not been loaded
   useEffect(() => {
-    if (status === 'succeeded' && user?.id) {
-      dispatch(fetchProfile(user.id));
+    if (isAuthenticated && user?._id && profileStatus === 'idle') {
+      console.log('🚀 Dispatching fetchProfile for user:', user._id);
+      dispatch(fetchProfile(user._id));
     }
-  }, [dispatch, status, user]);
+  }, [dispatch, isAuthenticated, user, profileStatus]);
 
-  if (status === 'loading') return <p>Loading authentication...</p>;
-  if (status === 'failed') return <p>Error: {error}</p>;
-  if (!user)
+  // ✅ Handle Loading States
+  if (status === 'loading' || profileStatus === 'loading') {
+    console.log('⏳ Still Loading Profile...');
+    return <LoadingSpinner />;
+  }
+
+  if (status === 'failed' || profileStatus === 'failed') {
     return (
-      <p className='text-foreground-light'>
+      <p className='text-red-500 text-center mt-10'>
+        Error: Failed to load profile
+      </p>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <p className='text-foreground-light mt-40 text-center text-lg md:text-160px'>
         Please{' '}
-        <Link href='/signin' className='text-primary-blue hover:underline'>
+        <Link
+          href='/signin'
+          className='text-primary-blue hover:underline hover:text-primary-green cursor-pointer'
+        >
           Sign in
         </Link>{' '}
         to view your dashboard.
       </p>
     );
+  }
 
   return (
     <div className='flex'>
-      {/* ✅ Use Updated Sidebar Component */}
-      <Sidebar
-      /*logo='/NRG_Playground_Logo.svg'
-        links={[
-          { label: 'Blog', href: '/blog', icon: 'IconArticle' },
-          { label: 'Events', href: '/events', icon: 'IconCalendar' },
-          { label: 'Adventure Map', href: '/adventure-map', icon: 'IconMap' },
-          {
-            label: 'Adventure Sports',
-            href: '/adventure-sports',
-            icon: 'IconUsers',
-          },
-        ]}*/
-      />
+      <Sidebar />
 
-      {/* ✅ Main Dashboard Content (Aligned with Sidebar) */}
       <div className='flex-1 transition-all duration-300 ease-in-out p-6 ml-16 md:ml-20 lg:ml-24'>
         <motion.div
           className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
@@ -69,7 +86,13 @@ export default function Dashboard() {
           <ul className='text-sm md:text-base'>
             {profile?.bookmarkedArticles?.length > 0 ? (
               profile.bookmarkedArticles.map((article, index) => (
-                <li key={index}>{article.title}</li>
+                <li
+                  key={index}
+                  className='cursor-pointer text-primary-blue hover:text-[--primary-green] transition duration-200 ease-in-out hover:text-primary-green'
+                  onClick={() => setSelectedArticle(article)}
+                >
+                  {article.title}
+                </li>
               ))
             ) : (
               <p>No bookmarked articles.</p>
@@ -78,7 +101,10 @@ export default function Dashboard() {
         </motion.div>
 
         {/* ✅ Top Projects */}
-        <motion.div className='mt-6 bg-background-light text-foreground-light p-4 rounded-lg shadow-md'>
+        <motion.div
+          className='mt-6 bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
+          whileHover={{ scale: 1.02 }}
+        >
           <h3 className='text-lg md:text-xl font-semibold mb-2'>
             Top Projects
           </h3>
@@ -132,6 +158,12 @@ export default function Dashboard() {
           </ul>
         </motion.div>
       </div>
+      {selectedArticle && (
+        <ArticlePopup
+          article={selectedArticle}
+          onClose={() => setSelectedArticle(null)}
+        />
+      )}
     </div>
   );
 }

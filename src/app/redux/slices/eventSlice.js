@@ -1,6 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+export const addEvent = createAsyncThunk(
+  'events/addEvent',
+  async (eventData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/events`,
+        eventData
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Error adding event');
+    }
+  }
+);
+
 // Fetch Events (sorted by date)
 export const fetchEvents = createAsyncThunk(
   'events/fetchEvents',
@@ -60,6 +75,9 @@ const eventsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(addEvent.fulfilled, (state, action) => {
+        state.events.push(action.payload);
+      })
       .addCase(fetchEvents.pending, (state) => {
         state.loading = true;
       })

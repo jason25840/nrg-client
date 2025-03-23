@@ -1,25 +1,52 @@
 'use client';
 
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { usePathname } from 'next/navigation'; // ✅ Get the current path
+import { fetchUser } from './redux/slices/authSlice';
+import LoadingSpinner from './components/ui/LoadingSpinner';
 import Sidebar from './components/ui/Sidebar';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
 export default function AuthWrapper({ children }) {
-  const { isAuthenticated } = useSelector((state) => state.auth); // ✅ Get auth state
+  const dispatch = useDispatch();
+  const { isAuthenticated, status, user } = useSelector((state) => state.auth);
+  const pathname = usePathname(); // ✅ Get current path
+  const isDashboard = pathname.startsWith('/dashboard'); // ✅ Check if in dashboard
 
-  return isAuthenticated ? (
-    <div className='flex'>
-      <Sidebar /> {/* ✅ Sidebar only for logged-in users */}
-      <main className='flex-1'>{children}</main>
-    </div>
-  ) : (
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchUser());
+    }
+  }, []);
+
+  if (status === 'loading') {
+    return (
+      <>
+        {!isDashboard && <Header />} {/* 🚫 No Header on dashboard */}
+        <main className='w-full flex flex-col'>
+          <LoadingSpinner />
+        </main>
+        {!isDashboard && <Footer />} {/* Optional: remove footer too */}
+      </>
+    );
+  }
+
+  if (isAuthenticated && isDashboard) {
+    return (
+      <div className='flex'>
+        <Sidebar />
+        <main className='flex-1'>{children}</main>
+      </div>
+    );
+  }
+
+  return (
     <>
-      <Header />
-      <main className='container w-full min-h-screen flex flex-col relative z-10'>
-        {children}
-      </main>
-      <Footer />
+      {!isDashboard && <Header />} {/* 🚫 No Header on dashboard */}
+      <main className='w-full flex flex-col'>{children}</main>
+      {!isDashboard && <Footer />} {/* Optional */}
     </>
   );
 }

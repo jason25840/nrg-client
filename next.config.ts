@@ -1,3 +1,4 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -13,8 +14,13 @@ const nextConfig = {
         protocol: "https",
         hostname: "plus.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "www.gravatar.com", // ✅ Fix for gravatar issue
+      },
     ],
   },
+  reactStrictMode: true, // ✅ Ensures best practices
   async rewrites() {
     return [
       {

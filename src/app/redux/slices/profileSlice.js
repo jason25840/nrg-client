@@ -14,25 +14,35 @@ const defaultProfile = () => ({
 });
 
 const initialState = {
-  profile: null, // Profile starts as null to indicate no profile exists
+  profile: null, // Profile starts as null
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
 };
 
-// Async thunk to fetch the profile
+// ✅ Fetch User Profile
 export const fetchProfile = createAsyncThunk(
   'profile/fetchProfile',
   async (userId, { getState, rejectWithValue }) => {
     try {
-      const token = getState().auth.token; // Get JWT token from Redux state
+      const { isAuthenticated } = getState().auth;
+      if (!isAuthenticated) {
+        console.warn('⚠️ Skipping profile fetch, user not authenticated');
+        return rejectWithValue('User not authenticated');
+      }
+
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/profile/${userId}`,
         {
-          headers: { 'x-auth-token': token }, // Send token in headers
+          withCredentials: true, // ✅ Ensures cookies are included
         }
       );
+
       return response.data;
     } catch (error) {
+      if (error.response?.status === 401) {
+        console.warn('⚠️ Unauthorized access to profile.');
+        return rejectWithValue('Unauthorized');
+      }
       return rejectWithValue(
         error.response?.data?.message || 'Failed to fetch profile'
       );
@@ -40,19 +50,24 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
-// Async thunk to create the profile
+// ✅ Create Profile
 export const createProfile = createAsyncThunk(
   'profile/createProfile',
   async ({ userId, profileData }, { getState, rejectWithValue }) => {
     try {
-      const token = getState().auth.token; // Get JWT token from Redux state
+      const { isAuthenticated } = getState().auth;
+      if (!isAuthenticated) {
+        return rejectWithValue('User not authenticated');
+      }
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/profile`,
         { userId, ...profileData },
         {
-          headers: { 'x-auth-token': token }, // Send token in headers
+          withCredentials: true, // ✅ Ensures cookies are sent
         }
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -62,19 +77,24 @@ export const createProfile = createAsyncThunk(
   }
 );
 
-// Async thunk to update the profile
+// ✅ Update Profile
 export const updateProfile = createAsyncThunk(
   'profile/updateProfile',
   async ({ userId, profileData }, { getState, rejectWithValue }) => {
     try {
-      const token = getState().auth.token; // Get JWT token from Redux state
+      const { isAuthenticated } = getState().auth;
+      if (!isAuthenticated) {
+        return rejectWithValue('User not authenticated');
+      }
+
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/profile/${userId}`,
         profileData,
         {
-          headers: { 'x-auth-token': token }, // Send token in headers
+          withCredentials: true, // ✅ Ensures cookies are sent
         }
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -84,19 +104,24 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
-// Async thunk to delete the profile
+// ✅ Delete Profile
 export const deleteProfile = createAsyncThunk(
   'profile/deleteProfile',
   async (userId, { getState, rejectWithValue }) => {
     try {
-      const token = getState().auth.token; // Get JWT token from Redux state
+      const { isAuthenticated } = getState().auth;
+      if (!isAuthenticated) {
+        return rejectWithValue('User not authenticated');
+      }
+
       await axios.delete(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/profile/${userId}`,
         {
-          headers: { 'x-auth-token': token }, // Send token in headers
+          withCredentials: true, // ✅ Ensures cookies are sent
         }
       );
-      return userId; // Return userId to remove the profile from the Redux state
+
+      return userId; // Return userId to remove from Redux store
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || 'Failed to delete profile'
@@ -105,7 +130,7 @@ export const deleteProfile = createAsyncThunk(
   }
 );
 
-// Profile slice
+// ✅ Profile Slice
 const profileSlice = createSlice({
   name: 'profile',
   initialState,
@@ -126,16 +151,17 @@ const profileSlice = createSlice({
       }
     },
     clearProfile(state) {
-      state.profile = null; // Clear the profile entirely
+      state.profile = null; // Clears profile
       state.status = 'idle';
       state.error = null;
     },
     initializeProfile(state) {
-      state.profile = defaultProfile(); // Initialize a default profile structure
+      state.profile = defaultProfile(); // Resets to default
     },
   },
   extraReducers: (builder) => {
     builder
+      // ✅ Fetch Profile Cases
       .addCase(fetchProfile.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -146,23 +172,26 @@ const profileSlice = createSlice({
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.status = 'failed';
-        state.profile = null; // Explicitly set profile to null on fetch failure
+        state.profile = null;
         state.error = action.payload;
+        console.error('🚨 Profile Fetch Failed:', action.payload); // 👀 Show clear message
       })
 
+      // ✅ Create Profile Cases
       .addCase(createProfile.pending, (state) => {
         state.status = 'loading';
         state.error = null;
       })
       .addCase(createProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.profile = action.payload; // Set the newly created profile
+        state.profile = action.payload;
       })
       .addCase(createProfile.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })
 
+      // ✅ Update Profile Cases
       .addCase(updateProfile.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -176,12 +205,13 @@ const profileSlice = createSlice({
         state.error = action.payload;
       })
 
+      // ✅ Delete Profile Cases
       .addCase(deleteProfile.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(deleteProfile.fulfilled, (state) => {
         state.status = 'succeeded';
-        state.profile = null; // Clear profile on successful deletion
+        state.profile = null;
       })
       .addCase(deleteProfile.rejected, (state, action) => {
         state.status = 'failed';
@@ -190,6 +220,7 @@ const profileSlice = createSlice({
   },
 });
 
+// ✅ Export Actions & Reducer
 export const {
   setPursuits,
   setAccomplishments,

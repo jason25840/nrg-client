@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import { fetchProfile } from './profileSlice'; // adjust path if needed
+
 // ✅ Fetch Articles
 export const fetchArticles = createAsyncThunk(
   'blog/fetchArticles',
@@ -20,18 +22,32 @@ export const toggleLikeArticle = createAsyncThunk(
   async (articleId, { getState, rejectWithValue }) => {
     try {
       const state = getState();
-      const userId = state.auth.user?._id; // Ensure we have a logged-in user
+      const userId = state.auth.user?._id;
       if (!userId) return rejectWithValue('User not authenticated');
 
+      console.log('🔵 Sending Like Request:', { articleId, userId });
+
       const response = await axios.put(
-        `http://localhost:5001/api/articles/${articleId}/like`
+        `http://localhost:5001/api/articles/${articleId}/like`,
+        { userId },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true, // ✅ Include cookies
+        }
       );
+
+      console.log('🟢 Like Response:', response.data);
+
       return {
         articleId,
         likes: response.data.likes,
-        likedBy: response.data.likedBy,
+        likedBy: response.data.likedBy, // ✅ Update liked users
       };
     } catch (error) {
+      console.error(
+        '❌ Error updating like:',
+        error.response?.data || error.message
+      );
       return rejectWithValue(error.response?.data || 'Error updating like');
     }
   }
@@ -42,6 +58,50 @@ export const toggleLikesModal = (articleId) => (dispatch, getState) => {
   const currentState = getState().blog.likesModalOpen;
   dispatch(setLikesModal(currentState === articleId ? null : articleId));
 };
+
+// ✅ Toggle Bookmark for an Article
+export const toggleBookmarkArticle = createAsyncThunk(
+  'blog/toggleBookmarkArticle',
+  async (articleId, { getState, rejectWithValue }) => {
+    try {
+      const state = getState();
+      const userId = state.auth.user?._id;
+
+      if (!userId) {
+        console.error('❌ No userId found in state!');
+        return rejectWithValue('User not authenticated');
+      }
+      if (!articleId) {
+        console.error('❌ No articleId provided!');
+        return rejectWithValue('Article ID missing');
+      }
+
+      console.log('🔵 Sending Bookmark Request:', { articleId, userId });
+
+      const response = await axios.put(
+        `http://localhost:5001/api/articles/${articleId}/bookmark`,
+        { userId },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true, // ✅ Important for session-based auth
+        }
+      );
+      console.log('🟢 Bookmark Response:', response.data);
+
+      return {
+        articleId,
+        bookmarks: response.data.bookmarks,
+        bookmarkedBy: response.data.bookmarkedBy,
+      };
+    } catch (error) {
+      console.error(
+        '❌ Error updating bookmark:',
+        error.response?.data || error.message
+      );
+      return rejectWithValue(error.response?.data || 'Error updating bookmark');
+    }
+  }
+);
 
 // ✅ Initial Redux State
 const initialState = {
@@ -87,7 +147,16 @@ const blogSlice = createSlice({
         const article = state.articles.find((a) => a._id === articleId);
         if (article) {
           article.likes = likes;
-          article.likedBy = likedBy; // Update liked users
+          article.likedBy = likedBy; // ✅ Properly update liked users
+        }
+      })
+      // ✅ Handle Bookmark Toggle Updates
+      .addCase(toggleBookmarkArticle.fulfilled, (state, action) => {
+        const { articleId, bookmarks, bookmarkedBy } = action.payload;
+        const article = state.articles.find((a) => a._id === articleId);
+        if (article) {
+          article.bookmarks = bookmarks;
+          article.bookmarkedBy = bookmarkedBy;
         }
       });
   },

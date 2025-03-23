@@ -19,7 +19,7 @@ export default function Signin({ handleActiveModalClose, setActiveModal }) {
     const result = await dispatch(signin(formData));
     if (signin.fulfilled.match(result)) {
       router.push('/dashboard');
-      handleActiveModalClose();
+      handleActiveModalClose;
     } else {
       alert(result.payload || 'Signin failed');
     }

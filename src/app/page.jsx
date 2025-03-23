@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import Button from '../app/components/ui/Buttons';
 import Signin from '../app/components/auth/Signin';
 import Signup from '../app/components/auth/Signup';
@@ -15,6 +17,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeModal, setActiveModal] = useState(null);
 
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const router = useRouter();
+
   const handleActiveModalClose = () => setActiveModal(null);
 
   useEffect(() => {
@@ -27,37 +32,41 @@ export default function Home() {
   }, []);
 
   return (
-    <div className='relative flex flex-col min-h-screen w-full overflow-hidden'>
+    <div className='relative flex flex-col w-full overflow-hidden'>
       {/* 🔹 Hero Section */}
-      <div className='relative w-full h-screen flex flex-col justify-center items-center text-center overflow-hidden'>
-        <div className='absolute inset-0 w-full h-full'>
-          <video
-            autoPlay
-            loop
-            muted
-            className='absolute top-0 left-0 w-full h-full object-cover'
-          >
+      <section className='relative w-full bg-black text-white overflow-hidden'>
+        <div className='w-full h-[100vh] relative'>
+          <video autoPlay loop muted className='w-full h-full object-cover'>
             <source
               src='https://dm0qx8t0i9gc9.cloudfront.net/watermarks/video/HrrabAxWinloumzm/videoblocks-senior-man-with-instructor-climbing-rocks-outdoors-in-nature-active-lifestyle_sbpp03txk__c06ba0f367cdd11a00f49c23b34bbeb8__P360.mp4'
               type='video/mp4'
             />
           </video>
-          <div className='absolute inset-0 bg-black/50'></div>
+
+          {/* 🔽 Top Gradient Fade */}
+          <div className='absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-[--background-light] to-transparent z-20'></div>
+
+          {/* ⬆ Bottom Gradient Fade */}
+          <div className='absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[--background-light] to-transparent z-20'></div>
+
+          {/* 🔹 Hero Content */}
+          <div className='absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4 z-30'>
+            <h1 className='text-4xl md:text-5xl font-bold mb-20'>
+              Welcome to The NRG Connection
+            </h1>
+            <Button
+              onClick={() =>
+                isAuthenticated
+                  ? router.push('/dashboard')
+                  : setActiveModal('signin')
+              }
+              variant='primary'
+            >
+              {isAuthenticated ? 'Return to Dashboard' : 'Sign In'}
+            </Button>
+          </div>
         </div>
-
-        <h1 className='text-4xl md:text-5xl font-bold pb-10 lg:mb-20 md:mb-15 sm:mb-10 text-foreground z-10'>
-          Welcome to the NRG Playground
-        </h1>
-
-        {/* ✅ Open Signin Modal */}
-        <Button
-          onClick={() => setActiveModal('signin')}
-          variant='primary'
-          className='z-10'
-        >
-          Sign In
-        </Button>
-      </div>
+      </section>
 
       {/* 🔹 Weather Section */}
       <div className='relative z-20 w-full bg-gray-100 py-8 md:py-12'>

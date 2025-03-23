@@ -58,34 +58,54 @@
 /* 🌍 Root Theme Colors */
 :root {
   --background-light: #f8f9fa; /* Off-White */
-  --background-dark: #0a0a0a; /* Dark Mode */
+  --background-dark: #121212; /* Darker Gray for dark mode */
   --foreground-light: #000000; /* Black for readability */
   --foreground-dark: #ffffff; /* White for contrast in dark mode */
+  --border-light: #d1d1d1; /* Light gray border */
+  --border-dark: #444444; /* Dark gray border for contrast */
 
   /* 🎨 Brand Colors */
-  --primary-blue: #4d8084; /* Even Darker Soft Blue */
-  --primary-green: #5a9b86; /* Even Darker Pale Green */
-  --accent-pink: #b66b7f; /* Even Darker Blush Pink */
-  --accent-orange: #d18b4e; /* Even Darker Light Orange */
+  --primary-blue: #4d8084;
+  --primary-green: #5a9b86;
+  --accent-pink: #b66b7f;
+  --accent-orange: #d18b4e;
 
-  /* 🌙 Dark Mode */
+  /* 🌙 Default Mode */
   --background: var(--background-light);
   --foreground: var(--foreground-light);
+  --border: var(--border-light);
 }
 
+/* 🌓 Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: var(--background-dark);
     --foreground: var(--foreground-dark);
+    --border: var(--border-dark);
   }
 }
 
-/* ✨ Global Styles */
-body {
+/* 🌓 Ensure Global Contrast */
+.contrast {
+  background-color: var(--background);
   color: var(--foreground);
+}
+
+.contrast-border {
+  border-color: var(--border);
+}
+
+/* Error Messages */
+.text-error {
+  color: var(--error-text);
+}
+
+/* ✨ Global Text & Layout */
+body {
   background: var(--background);
+  color: var(--foreground);
   font-family: 'Merriweather', serif;
-  @apply text-base leading-relaxed; /* Default Tailwind Typography */
+  @apply text-base leading-relaxed;
 }
 
 /* 📌 Headings & Text */
@@ -101,19 +121,25 @@ a,
 input,
 textarea,
 select {
-  color: var(--foreground); /* Ensures all text elements follow the theme */
   font-family: 'Merriweather', serif;
 }
 
-/* 🔘 Buttons (Preserve Styling) */
+/* 🔘 Buttons */
 button {
   font-family: 'Roboto', sans-serif;
+  background: var(--primary-blue);
+  color: var(--foreground-dark);
   @apply px-4 py-2 rounded-md font-medium;
   cursor: pointer;
 }
 
+button:hover {
+  background: var(--primary-green);
+}
+
 /* 🔗 Links */
 a {
+  color: var(--primary-blue);
   text-decoration: none;
 }
 
@@ -126,7 +152,10 @@ input,
 textarea,
 select {
   font-family: 'Roboto', sans-serif;
-  @apply px-3 py-2 border rounded-lg w-full;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  @apply px-3 py-2 rounded-lg w-full;
 }
 
 input:focus,
@@ -146,6 +175,11 @@ select:focus {
 
 .section {
   @apply py-10;
+}
+
+/* Error Messages */
+.text-error {
+  color: var(--error-text);
 }
 
 /* 🌓 Dark Mode Tweaks */

@@ -1,80 +1,44 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   FaHeart,
   FaRegHeart,
   FaBookmark,
   FaRegBookmark,
   FaTrash,
+  FaChevronDown,
+  FaChevronUp,
 } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify'; // ✅ Import toast for alerts
-import 'react-toastify/dist/ReactToastify.css'; // ✅ Import styles
-import {
-  toggleLikesModal,
-  toggleLikeArticle,
-} from '../../redux/slices/blogSlice';
 
-export default function ArticleCard({ article, onClick, isAdmin }) {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const likesModalOpen = useSelector((state) => state.blog.likesModalOpen);
-  const isExpanded = likesModalOpen === article._id;
-
-  const currentUser = useSelector((state) => state.auth.user); // Assuming user is stored in Redux
-  const userId = currentUser?._id; // Get logged-in user's ID
+export default function ArticleCard({
+  article,
+  onClick,
+  onLike,
+  onBookmark,
+  isAdmin,
+  isFeatured,
+}) {
+  const currentUser = useSelector((state) => state.auth.user);
+  const userId = currentUser?._id;
 
   const likeCount = article.likes || 0;
   const likedUsers = article.likedBy || [];
-
-  // ✅ Check if the current user has already liked the article
   const hasLiked = likedUsers.some((user) => user._id === userId);
+  const hasBookmarked = article.bookmarkedBy?.includes(userId);
 
-  const displayedUsers = likedUsers.slice(0, 2); // Show only the first two
-  const moreUsers =
-    likedUsers.length > 2 ? `+${likedUsers.length - 2} more` : '';
-
-  // ✅ Handle Like Click
-  const handleLike = (e) => {
-    e.stopPropagation();
-
-    if (!userId) {
-      // ❌ User not signed in → Show alert with login link
-      toast.warn(
-        <div>
-          <span>You must sign in to like articles. </span>
-          <button
-            onClick={() => router.push('/signin')}
-            className='text-blue-500 underline ml-1'
-          >
-            Sign in now
-          </button>
-        </div>,
-        { autoClose: 5000 }
-      );
-      return;
-    }
-
-    dispatch(toggleLikeArticle(article._id)); // ✅ Dispatch Redux action if signed in
-  };
-
-  // ✅ Handle Like List Click (Show Full List)
-  const handleToggleLikes = (e) => {
-    e.stopPropagation();
-    dispatch(toggleLikesModal(article._id));
-  };
+  const [showLikedUsers, setShowLikedUsers] = useState(false);
 
   return (
     <motion.div
-      whileHover={{ scale: 1.03 }}
-      className='rounded-xl bg-gray-100 dark:bg-neutral-900 overflow-hidden shadow-md cursor-pointer transition-all'
+      whileHover={{ scale: isFeatured ? 1.02 : 1.03 }}
+      className={`relative rounded-xl overflow-visible shadow-md cursor-pointer transition-all contrast contrast-border`}
       onClick={onClick}
     >
-      {/* Image Section */}
+      {/* ✅ Image Section */}
       <div className='relative w-full h-56'>
         <Image
           src={article.image}
@@ -85,66 +49,86 @@ export default function ArticleCard({ article, onClick, isAdmin }) {
         />
       </div>
 
-      {/* Title & Snippet */}
+      {/* ✅ Article Content */}
       <div className='p-5'>
-        <h2 className='text-xl font-semibold text-foreground'>
-          {article.title}
-        </h2>
-        <p className='text-sm text-foreground-light'>
+        <h2 className='text-xl font-semibold'>{article.title}</h2>
+        <p className='text-sm'>
           {article.snippet.length > 100
             ? article.snippet.substring(0, 100) + '...'
             : article.snippet}
         </p>
 
-        {/* Actions */}
+        {/* ✅ Actions: Like, Bookmark, and Like List */}
         <div className='flex justify-between items-center mt-4'>
-          {/* ✅ Like Button (Toggles Between Filled & Outline Heart) */}
+          {/* ✅ Like Button */}
           <button
-            className='flex items-center gap-2 text-gray-500 hover:text-red-500'
-            onClick={handleLike}
+            className='flex items-center gap-2 hover:text-red-500'
+            onClick={(e) => onLike(e, article._id)}
           >
-            {hasLiked ? <FaHeart size={20} /> : <FaRegHeart size={20} />}
+            {hasLiked ? (
+              <FaHeart size={20} className='text-[--accent-pink]' />
+            ) : (
+              <FaRegHeart size={20} />
+            )}
             <span>{likeCount}</span>
           </button>
 
-          {/* ✅ Liked Users List */}
-          <div className='text-sm text-gray-600 mt-2'>
-            {displayedUsers.map((user) => (
-              <span key={user._id} className='mr-1'>
-                {user.username}
-              </span>
-            ))}
-            {moreUsers && (
-              <button className='text-blue-500' onClick={handleToggleLikes}>
-                {isExpanded ? 'Hide' : moreUsers}
+          {/* ✅ Expandable Like List */}
+          {likedUsers.length > 0 && (
+            <div className='relative'>
+              <button
+                className='text-sm  flex items-center'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLikedUsers(!showLikedUsers);
+                }}
+              >
+                {showLikedUsers ? (
+                  <>
+                    Hide Likes <FaChevronUp className='ml-1' />
+                  </>
+                ) : (
+                  <>
+                    {likedUsers.length}{' '}
+                    {likedUsers.length === 1 ? 'Like' : 'Likes'}
+                    <FaChevronDown className='ml-1' />
+                  </>
+                )}
               </button>
-            )}
-          </div>
+
+              {/* ✅ Liked Users Dropdown */}
+              {showLikedUsers && (
+                <div className='absolute contrast contrast-border p-3 mt-1 rounded-lg shadow-lg'>
+                  <p className='text-sm font-semibold mb-2'>Liked by:</p>
+                  {likedUsers.map((user, index) => (
+                    <p key={index} className='text-sm text-black'>
+                      {user?.name ?? user?.username ?? 'Anonymous'}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* ✅ Bookmark Button */}
-          <button className='flex items-center gap-2 text-gray-500 hover:text-blue-500'>
-            <FaRegBookmark size={20} />
+          <button
+            className='flex items-center gap-2 hover:text-blue-500'
+            onClick={(e) => onBookmark(e, article._id)}
+          >
+            {hasBookmarked ? (
+              <FaBookmark size={20} className='text-[--accent-pink]' />
+            ) : (
+              <FaRegBookmark size={20} />
+            )}
           </button>
 
           {/* ✅ Delete Button (Admin Only) */}
           {isAdmin && (
-            <button className='text-gray-500 hover:text-red-600'>
+            <button className='hover:text-red-600'>
               <FaTrash size={20} />
             </button>
           )}
         </div>
-
-        {/* ✅ Full Liked Users List (Appears When Clicked) */}
-        {isExpanded && (
-          <div className='bg-white p-3 mt-2 rounded-lg shadow-lg border border-gray-300'>
-            <p className='text-sm font-semibold mb-2'>Liked by:</p>
-            {likedUsers.map((user) => (
-              <p key={user._id} className='text-sm text-gray-700'>
-                {user.username}
-              </p>
-            ))}
-          </div>
-        )}
       </div>
     </motion.div>
   );

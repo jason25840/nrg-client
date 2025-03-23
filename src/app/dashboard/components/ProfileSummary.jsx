@@ -3,12 +3,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 export default function ProfileSummary() {
   const { profile, status, error } = useSelector((state) => state.profile);
 
   if (status === 'loading') {
-    return <p>Loading profile...</p>;
+    return <LoadingSpinner />;
   }
 
   if (!profile) {
@@ -38,7 +39,11 @@ export default function ProfileSummary() {
 
   return (
     <div className='p-6 bg-gray-100 text-black rounded-lg shadow-md'>
-      <h2 className='text-2xl font-semibold mb-4'>Your Profile Summary</h2>
+      <h2 className='text-2xl font-semibold mb-4'>
+        {profile?.user?.name
+          ? `${profile.user.name}'s Profile`
+          : 'Your Profile Summary'}
+      </h2>
 
       {/* Pursuits */}
       <div className='mb-4'>
