@@ -25,8 +25,8 @@ export default function Sidebar() {
     'https://media.istockphoto.com/id/2149530993/photo/digital-human-head-concept-for-ai-metaverse-and-facial-recognition-technology.webp?a=1&b=1&s=612x612&w=0&k=20&c=nyP4c-s5cSZy1nv1K0xn1ynC-Xuc1sY4Y29ZQqcrztA='; // Default avatar
 
   const links = [
-    { label: 'Blog', href: '/blog', icon: <IconArticle /> },
-    { label: 'Events', href: '/eventsPage', icon: <IconCalendar /> },
+    { label: 'Articles', href: '/article', icon: <IconArticle /> },
+    { label: 'Events', href: '/events', icon: <IconCalendar /> },
     { label: 'Map', href: '/adventure-map', icon: <IconMap /> },
     { label: 'Connect', href: '/adventure-sports', icon: <IconUsers /> },
   ];

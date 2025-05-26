@@ -21,7 +21,12 @@ export default function PursuitSelector({ value, onChange }) {
 
   return (
     <div className='pursuit-selector space-y-4'>
-      <label className='block text-lg font-semibold mb-2'>Your Pursuits</label>
+      <label
+        className='block text-lg font-semibold mb-2'
+        title='Choose your adventure interests and skill levels'
+      >
+        Adventure Interests
+      </label>
       {value.map((item, index) => (
         <div key={index} className='flex space-x-4 items-center'>
           <select

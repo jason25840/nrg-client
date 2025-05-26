@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import profileReducer from './slices/profileSlice';
 import carouselReducer from './slices/carouselSlice';
-import blogReducer from './slices/blogSlice';
+import articleReducer from './slices/articleSlice';
 import eventReducer from './slices/eventSlice';
 
 export const store = configureStore({
@@ -10,7 +10,7 @@ export const store = configureStore({
     auth: authReducer,
     profile: profileReducer,
     carousel: carouselReducer,
-    blog: blogReducer,
+    article: articleReducer,
     events: eventReducer,
   },
 });

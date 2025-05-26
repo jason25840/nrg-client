@@ -6,9 +6,11 @@ import { useDispatch } from 'react-redux';
 import { signin } from '../../redux/slices/authSlice';
 import ModalWithForm from '../ui/ModalWithForm';
 
-export default function Signin({ handleActiveModalClose, setActiveModal }) {
+export default function Signin() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const searchParams = new URLSearchParams(window.location.search);
+  const redirectTo = searchParams.get('from') || '/dashboard';
   const [formData, setFormData] = useState({ email: '', password: '' });
 
   const handleChange = (e) =>
@@ -16,10 +18,11 @@ export default function Signin({ handleActiveModalClose, setActiveModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('📤 Submitting signin form:', formData);
     const result = await dispatch(signin(formData));
+
     if (signin.fulfilled.match(result)) {
-      router.push('/dashboard');
-      handleActiveModalClose;
+      router.push(redirectTo);
     } else {
       alert(result.payload || 'Signin failed');
     }
@@ -29,8 +32,9 @@ export default function Signin({ handleActiveModalClose, setActiveModal }) {
     <ModalWithForm
       title='Sign In'
       onSubmit={handleSubmit}
-      handleActiveModalClose={handleActiveModalClose}
+      handleActiveModalClose={() => router.push('/')}
       buttonText='Sign In'
+      asPage={true}
     >
       <input
         type='email'
@@ -46,14 +50,12 @@ export default function Signin({ handleActiveModalClose, setActiveModal }) {
         onChange={handleChange}
         className='w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-blue'
       />
-      <div className='text-center mt-4'>
+
+      <div className='text-center mt-4 text-sm'>
         Don&apos;t have an account?{' '}
         <span
-          className='text-primary-blue cursor-pointer'
-          onClick={() => {
-            handleActiveModalClose(); // Close Sign In Modal
-            setTimeout(() => setActiveModal('signup'), 100); // Open Sign Up Modal
-          }}
+          className='text-primary-blue cursor-pointer font-semibold'
+          onClick={() => router.push('/signup')}
         >
           Sign Up
         </span>

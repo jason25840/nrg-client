@@ -4,13 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import Button from '../app/components/ui/Buttons';
-import Signin from '../app/components/auth/Signin';
-import Signup from '../app/components/auth/Signup';
+//import Signin from '../app/components/auth/Signin';
+//import Signup from '../app/components/auth/Signup';
 import WeatherCard from './components/weather/WeatherCard';
 import { getWeatherData } from './components/weather/WeatherService';
 import { Carousel } from './components/ui/Carousel';
 import { Card } from './components/ui/Card';
 import { carouselItems } from './data/carouselData';
+import PageLayout from './components/ui/PageLayout';
 
 export default function Home() {
   const [weather, setWeather] = useState(null);
@@ -32,64 +33,44 @@ export default function Home() {
   }, []);
 
   return (
-    <div className='relative flex flex-col w-full overflow-hidden'>
-      {/* 🔹 Hero Section */}
-      <section className='relative w-full bg-black text-white overflow-hidden'>
-        <div className='w-full h-[100vh] relative'>
-          <video autoPlay loop muted className='w-full h-full object-cover'>
-            <source
-              src='https://dm0qx8t0i9gc9.cloudfront.net/watermarks/video/HrrabAxWinloumzm/videoblocks-senior-man-with-instructor-climbing-rocks-outdoors-in-nature-active-lifestyle_sbpp03txk__c06ba0f367cdd11a00f49c23b34bbeb8__P360.mp4'
-              type='video/mp4'
-            />
-          </video>
-
-          {/* 🔽 Top Gradient Fade */}
-          <div className='absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-[--background-light] to-transparent z-20'></div>
-
-          {/* ⬆ Bottom Gradient Fade */}
-          <div className='absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[--background-light] to-transparent z-20'></div>
-
-          {/* 🔹 Hero Content */}
-          <div className='absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4 z-30'>
-            <h1 className='text-4xl md:text-5xl font-bold mb-20'>
-              Welcome to The NRG Connection
-            </h1>
-            <Button
-              onClick={() =>
+    <PageLayout>
+      <div className='relative flex flex-col w-full overflow-hidden'>
+        {/* 🔹 Welcome Section */}
+        <div className='relative z-20 w-full bg-gray-100 py-12 text-center'>
+          <h2 className='text-3xl md:text-4xl font-bold text-primary-blue mb-4'>
+            Discover, Adventure, and Connect
+          </h2>
+          <p className='text-lg text-gray-600 max-w-2xl mx-auto mb-8'>
+            NRG Lines is your gateway to find events, learn about the places,
+            and connect with the New River Gorge outdoor community
+          </p>
+          <div className='mb-6'>
+            <a
+              href='/best-of'
+              className='text-lg font-semibold text-primary-green hover:underline'
+            >
+              🔥 View the Best of NRG
+            </a>
+          </div>
+          <Button
+            onClick={
+              () =>
                 isAuthenticated
                   ? router.push('/dashboard')
-                  : setActiveModal('signin')
-              }
-              variant='primary'
-            >
-              {isAuthenticated ? 'Return to Dashboard' : 'Sign In'}
-            </Button>
-          </div>
+                  : router.push('/signin?from=/') // 🟢 redirect with fallback info
+            }
+            variant='primary'
+            className='animate-pulse'
+          >
+            {isAuthenticated
+              ? 'Return to Dashboard'
+              : 'Let the Adventure Begin'}
+          </Button>
         </div>
-      </section>
 
-      {/* 🔹 Weather Section */}
-      <div className='relative z-20 w-full bg-gray-100 py-8 md:py-12'>
-        <div className='flex flex-col items-center justify-center w-full py-8 md:py-12'>
-          <h2 className='text-2xl md:text-3xl font-bold text-black mb-6'>
-            Current Weather in the Playground
-          </h2>
-          {loading ? <p>Loading...</p> : <WeatherCard weather={weather} />}
-        </div>
-      </div>
-
-      {/* 🔹 Explore Section (Carousel) */}
-      <div className='relative z-20 w-full bg-gray-100 py-8 md:py-12'>
-        <div className='flex flex-col items-center justify-center w-full py-8 md:py-12'>
-          <h2 className='text-2xl md:text-3xl font-bold text-black mb-6'>
-            Explore the NRG
-          </h2>
-          <p className='text-lg text-center max-w-2xl text-black mb-10'>
-            Connect with climbers, mountain bikers, trail runners, and kayakers
-            in the New River Gorge. Explore activities, check weather
-            conditions, and stay updated on upcoming events.
-          </p>
-          <div className='w-full flex flex-col items-center justify-center'>
+        {/* 🔹 Carousel Section */}
+        <div className='relative z-20 w-full bg-gray-100 py-12'>
+          <div className='flex flex-col items-center justify-center w-full'>
             <Carousel
               items={carouselItems.map((item, index) => (
                 <Card key={index} card={item} index={index} />
@@ -97,19 +78,29 @@ export default function Home() {
             />
           </div>
         </div>
+
+        {/* 🔹 Weather Section */}
+        <div className='relative z-20 w-full bg-gray-100 py-12'>
+          <div className='flex flex-col items-center justify-center w-full'>
+            <h2 className='text-2xl md:text-3xl font-bold text-black mb-6'>
+              NRG Weather Conditions
+            </h2>
+            {loading ? <p>Loading...</p> : <WeatherCard weather={weather} />}
+          </div>
+        </div>
+
+        {/* ✅ Render Modals Conditionally 
+        {activeModal === 'signin' && (
+          <Signin
+            handleActiveModalClose={handleActiveModalClose}
+            setActiveModal={setActiveModal}
+          />
+        )}
+
+        {activeModal === 'signup' && (
+          <Signup handleActiveModalClose={handleActiveModalClose} />
+        )}*/}
       </div>
-
-      {/* ✅ Render Modals Conditionally */}
-      {activeModal === 'signin' && (
-        <Signin
-          handleActiveModalClose={handleActiveModalClose}
-          setActiveModal={setActiveModal}
-        />
-      )}
-
-      {activeModal === 'signup' && (
-        <Signup handleActiveModalClose={handleActiveModalClose} />
-      )}
-    </div>
+    </PageLayout>
   );
 }

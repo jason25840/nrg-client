@@ -22,21 +22,18 @@ const initialState = {
 // ✅ Fetch User Profile
 export const fetchProfile = createAsyncThunk(
   'profile/fetchProfile',
-  async (userId, { getState, rejectWithValue }) => {
-    try {
-      const { isAuthenticated } = getState().auth;
-      if (!isAuthenticated) {
-        console.warn('⚠️ Skipping profile fetch, user not authenticated');
-        return rejectWithValue('User not authenticated');
-      }
+  async (userId, { rejectWithValue }) => {
+    if (!userId) {
+      return rejectWithValue('User ID is required');
+    }
 
+    try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/profile/${userId}`,
         {
-          withCredentials: true, // ✅ Ensures cookies are included
+          withCredentials: true,
         }
       );
-
       return response.data;
     } catch (error) {
       if (error.response?.status === 401) {
@@ -174,7 +171,7 @@ const profileSlice = createSlice({
         state.status = 'failed';
         state.profile = null;
         state.error = action.payload;
-        console.error('🚨 Profile Fetch Failed:', action.payload); // 👀 Show clear message
+        console.error('🚨 Profile Fetch Failed:', action.payload);
       })
 
       // ✅ Create Profile Cases

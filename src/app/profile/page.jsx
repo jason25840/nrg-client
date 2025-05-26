@@ -3,9 +3,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ProfileForm from './components/ProfileForm';
+import useHasMounted from '@/app/hooks/useHasMounted'; // ✅ your hook
 
 export default function ProfilePage() {
   const { profile } = useSelector((state) => state.profile);
+  const hasMounted = useHasMounted(); // ✅ use it
+
+  if (!hasMounted) return null; // ✅ fix hydration mismatch
 
   return (
     <div className='container mx-auto p-6'>

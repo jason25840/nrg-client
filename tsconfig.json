@@ -33,12 +33,12 @@
     "src/app/types.js",
     "src/app/redux/store.js",
     "src/app/redux/slices/authSlice.js",
-    "src/app/eventsPage/page.jsx",
+    "src/app/event/page.jsx",
     "src/app/components/Header.jsx",
     "src/app/components/Footer.jsx",
     "src/app/pages/social/components/ChatMessage.jsx",
     "src/app/components/ChatInterface.jsx",
-    "src/app/pages/blog/page.jsx",
+    "src/app/pages/article/page.jsx",
     "src/app/pages/social/page.jsx"
   ],
   "exclude": ["node_modules"] // Exclude dependencies

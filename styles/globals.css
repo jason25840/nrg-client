@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 🔘 Animation Keyframes */
+
+/* Border Pulse Animation */
 @keyframes border-glow {
   0% {
     border-color: var(--primary-blue);
@@ -55,22 +58,43 @@
   animation: glow 2.5s infinite alternate ease-in-out;
 }
 
+.glow {
+  text-shadow: 0 0 8px var(--primary-blue), 0 0 12px var(--accent-pink);
+}
+
+/* Button Pulse animation*/
+@keyframes pulse-slow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
 /* 🌍 Root Theme Colors */
 :root {
-  --background-light: #f8f9fa; /* Off-White */
-  --background-dark: #121212; /* Darker Gray for dark mode */
-  --foreground-light: #000000; /* Black for readability */
-  --foreground-dark: #ffffff; /* White for contrast in dark mode */
-  --border-light: #d1d1d1; /* Light gray border */
-  --border-dark: #444444; /* Dark gray border for contrast */
+  /* Background and Text */
+  --background-light: #f1f3f5; /* Soft gray background */
+  --background-dark: #0d0d0d; /* Deep dark mode */
+  --foreground-light: #111111; /* Deep readable black */
+  --foreground-dark: #ffffff; /* Crisp white */
+  --border-light: #c1c1c1;
+  --border-dark: #333333;
 
-  /* 🎨 Brand Colors */
-  --primary-blue: #4d8084;
-  --primary-green: #5a9b86;
-  --accent-pink: #b66b7f;
-  --accent-orange: #d18b4e;
+  /* Brand Colors */
+  --primary-blue: #2c6e91; /* Finalized single blue */
+  --primary-green: #387f6b; /* Rugged forest green */
+  --accent-pink: #94475a; /* Adventure earthy pink */
+  --accent-orange: #b76d39; /* Rich sunset orange */
 
-  /* 🌙 Default Mode */
+  --highlight-yellow-light: #f5e697; /* Soft highlight for light mode */
+  --highlight-yellow-dark: #f0c929; /* Strong highlight for dark mode */
+
+  /* Default Mode */
   --background: var(--background-light);
   --foreground: var(--foreground-light);
   --border: var(--border-light);
@@ -82,6 +106,9 @@
     --background: var(--background-dark);
     --foreground: var(--foreground-dark);
     --border: var(--border-dark);
+
+    --highlight-yellow-light: #f0c929;
+    --highlight-yellow-dark: #f5e697;
   }
 }
 

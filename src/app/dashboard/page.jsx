@@ -5,69 +5,85 @@ import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProfile } from '../redux/slices/profileSlice';
 import { motion } from 'framer-motion';
-import Sidebar from '../components/ui/Sidebar';
+import { useRouter } from 'next/navigation';
+import PageLayout from '../components/ui/PageLayout';
 import ProfileSummary from './components/ProfileSummary';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ArticlePopup from '../blog/components/ArticlePopup';
+import AdminPanel from './components/AdminPanel';
+import EventCard from '../event/components/EventCard';
+import ModalWithContent from '../components/ui/ModalWithContent';
+import Image from 'next/image';
 
 export default function Dashboard() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { user, isAuthenticated, status } = useSelector((state) => state.auth);
   const { profile, status: profileStatus } = useSelector(
     (state) => state.profile
   );
-  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  console.log('📌 Dashboard State:', {
-    isAuthenticated,
-    user,
-    profile,
-    status,
-    profileStatus,
-  });
-
-  // ✅ Fetch profile when user is authenticated and profile has not been loaded
   useEffect(() => {
     if (isAuthenticated && user?._id && profileStatus === 'idle') {
-      console.log('🚀 Dispatching fetchProfile for user:', user._id);
       dispatch(fetchProfile(user._id));
     }
   }, [dispatch, isAuthenticated, user, profileStatus]);
 
-  // ✅ Handle Loading States
   if (status === 'loading' || profileStatus === 'loading') {
-    console.log('⏳ Still Loading Profile...');
     return <LoadingSpinner />;
   }
 
   if (status === 'failed' || profileStatus === 'failed') {
     return (
-      <p className='text-red-500 text-center mt-10'>
-        Error: Failed to load profile
-      </p>
+      <PageLayout>
+        <p className='text-red-500 text-center mt-10'>
+          Error: Failed to load profile
+        </p>
+      </PageLayout>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <p className='text-foreground-light mt-40 text-center text-lg md:text-160px'>
-        Please{' '}
-        <Link
-          href='/signin'
-          className='text-primary-blue hover:underline hover:text-primary-green cursor-pointer'
-        >
-          Sign in
-        </Link>{' '}
-        to view your dashboard.
-      </p>
+      <PageLayout>
+        <p className='text-foreground-light mt-40 text-center text-lg md:text-xl'>
+          Please{' '}
+          <Link
+            href='/signin'
+            className='text-primary-blue hover:underline hover:text-primary-green'
+          >
+            sign in
+          </Link>{' '}
+          to view your dashboard.
+        </p>
+      </PageLayout>
     );
   }
 
-  return (
-    <div className='flex'>
-      <Sidebar />
+  const gravatarUrl =
+    user?.avatar ||
+    'https://media.istockphoto.com/id/2149530993/photo/digital-human-head-concept-for-ai-metaverse-and-facial-recognition-technology.webp?a=1&b=1&s=612x612&w=0&k=20&c=nyP4c-s5cSZy1nv1K0xn1ynC-Xuc1sY4Y29ZQqcrztA=';
 
-      <div className='flex-1 transition-all duration-300 ease-in-out p-6 ml-16 md:ml-20 lg:ml-24'>
+  return (
+    <PageLayout>
+      <div className='max-w-4xl mx-auto px-4 py-8 space-y-6'>
+        {/* Avatar Display */}
+        <div className='flex justify-center'>
+          <div className='flex flex-col items-center'>
+            <Image
+              src={gravatarUrl}
+              alt='User Avatar'
+              width={120}
+              height={120}
+              className='rounded-full shadow-md border-4 border-primary-blue'
+            />
+            <p className='mt-2 text-lg font-semibold text-foreground'>
+              {user?.name}
+            </p>
+          </div>
+        </div>
+
+        {/* Profile Summary */}
         <motion.div
           className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
           whileHover={{ scale: 1.02 }}
@@ -75,39 +91,44 @@ export default function Dashboard() {
           <ProfileSummary profile={profile} />
         </motion.div>
 
-        {/* ✅ Bookmarked Articles */}
+        {/* Saved Articles */}
         <motion.div
-          className='mt-6 bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
+          className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
           whileHover={{ scale: 1.02 }}
         >
           <h3 className='text-lg md:text-xl font-semibold mb-2'>
-            Bookmarked Articles
+            My Saved Articles
           </h3>
           <ul className='text-sm md:text-base'>
             {profile?.bookmarkedArticles?.length > 0 ? (
               profile.bookmarkedArticles.map((article, index) => (
                 <li
                   key={index}
-                  className='cursor-pointer text-primary-blue hover:text-[--primary-green] transition duration-200 ease-in-out hover:text-primary-green'
-                  onClick={() => setSelectedArticle(article)}
+                  className='cursor-pointer text-primary-blue hover:text-primary-green transition duration-200'
+                  onClick={() =>
+                    router.push(`/article/${article._id}?from=/dashboard`)
+                  }
                 >
                   {article.title}
                 </li>
               ))
             ) : (
-              <p>No bookmarked articles.</p>
+              <p>
+                No saved articles yet.{' '}
+                <Link href='/article' className='text-primary-blue underline'>
+                  Explore articles
+                </Link>
+              </p>
             )}
           </ul>
         </motion.div>
 
-        {/* ✅ Top Projects */}
+        {/* Projects */}
         <motion.div
-          className='mt-6 bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
+          className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
           whileHover={{ scale: 1.02 }}
         >
-          <h3 className='text-lg md:text-xl font-semibold mb-2'>
-            Top Projects
-          </h3>
+          <h3 className='text-lg md:text-xl font-semibold mb-2'>My Projects</h3>
           <ul className='text-sm md:text-base'>
             {profile?.projects?.length > 0 ? (
               profile.projects.map((project, index) => (
@@ -129,41 +150,54 @@ export default function Dashboard() {
           </ul>
         </motion.div>
 
-        {/* ✅ Saved Events */}
+        {/* Saved Events */}
         <motion.div
-          className='mt-6 bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
+          className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
           whileHover={{ scale: 1.02 }}
         >
           <h3 className='text-lg md:text-xl font-semibold mb-2'>
-            Saved Events
+            My Saved Events
           </h3>
-          <ul className='text-sm md:text-base'>
-            {profile?.savedEvents?.length > 0 ? (
-              profile.savedEvents.map((event, index) => (
-                <li key={index}>
-                  {event.name} - {event.date}
-                </li>
-              ))
-            ) : (
-              <p>
-                No saved events yet.{' '}
-                <Link
-                  href='/eventsPage'
-                  className='text-primary-blue underline'
+          {profile?.savedEvents?.length > 0 ? (
+            <ul className='space-y-2'>
+              {profile.savedEvents.map((event) => (
+                <li
+                  key={event._id}
+                  className='cursor-pointer text-primary-blue hover:underline'
+                  onClick={() =>
+                    router.push(`/event/${event._id}?from=/dashboard`)
+                  }
                 >
-                  Explore events
-                </Link>
-              </p>
-            )}
-          </ul>
+                  {event.title} –{' '}
+                  {new Date(event.date).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: '2-digit',
+                    year: 'numeric',
+                  })}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>
+              No saved events yet.{' '}
+              <Link href='/event' className='text-primary-blue underline'>
+                Explore events
+              </Link>
+            </p>
+          )}
         </motion.div>
+
+        {/* Admin Panel */}
+        {user?.role === 'admin' && <AdminPanel />}
+
+        {/* EventCard Modal */}
+        {selectedEvent && (
+          <ModalWithContent onClose={() => setSelectedEvent(null)}>
+            <EventCard event={selectedEvent} user={user} isOwner={false} />
+          </ModalWithContent>
+        )}
       </div>
-      {selectedArticle && (
-        <ArticlePopup
-          article={selectedArticle}
-          onClose={() => setSelectedArticle(null)}
-        />
-      )}
-    </div>
+    </PageLayout>
   );
 }

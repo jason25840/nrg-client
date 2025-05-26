@@ -24,7 +24,7 @@ export const Card = ({ card }) => {
 
         {/* Image */}
         <Image
-          src={card.src || '/default-placeholder.jpg'}
+          src={card.src}
           alt={card.title || 'Default Title'}
           fill
           sizes='(max-width: 600px) 100px, (max-width: 1024px) 160px, 200px'
