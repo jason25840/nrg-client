@@ -2,30 +2,34 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux';
-import Link from 'next/link';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
-export default function ProfileSummary() {
+export default function ProfileSummary({ onEditProfile }) {
   const { profile, status, error } = useSelector((state) => state.profile);
+  const { user } = useSelector((state) => state.auth);
 
   if (status === 'loading') {
     return <LoadingSpinner />;
   }
 
-  if (!profile) {
+  if (!profile || !profile.pursuits || profile.pursuits.length === 0) {
     return (
       <div className='p-6 bg-gray-100 text-black rounded-lg shadow-md'>
-        <h2 className='text-2xl font-semibold mb-4'>No Profile Found</h2>
+        <h2 className='text-2xl font-semibold mb-4'>
+          {user?.name
+            ? `${user.name} has not created a profile yet.`
+            : 'No Profile Found'}
+        </h2>
         <p className='mb-10'>
-          You haven’t created a profile yet. Start by adding your pursuits,
-          accomplishments, and even social media links!
+          Start by adding your pursuits, accomplishments, and even social media
+          links!
         </p>
-        <Link
-          href='/profile'
+        <button
+          onClick={onEditProfile}
           className='btn bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 cursor-pointer'
         >
           Create Profile
-        </Link>
+        </button>
       </div>
     );
   }
@@ -47,7 +51,20 @@ export default function ProfileSummary() {
 
       {/* Pursuits */}
       <div className='mb-4'>
-        <h3 className='text-xl font-semibold'>Pursuits</h3>
+        <div className='relative group'>
+          <h3 className='text-xl font-semibold inline-block'>Pursuits</h3>
+          <button
+            className='ml-2 text-blue-500 underline text-sm focus:outline-none'
+            onClick={(e) => {
+              e.currentTarget.nextSibling.classList.toggle('hidden');
+            }}
+          >
+            What’s this?
+          </button>
+          <div className='absolute z-10 mt-2 p-2 text-sm bg-black text-white rounded shadow-lg hidden w-64'>
+            These are activities or sports you pursue inside the NRG.
+          </div>
+        </div>
         {pursuits.length > 0 ? (
           <ul className='list-disc list-inside'>
             {pursuits.map((pursuit, index) => (
@@ -137,12 +154,12 @@ export default function ProfileSummary() {
       </div>
 
       {/* Edit Profile Button */}
-      <Link
-        href='/profile'
+      <button
+        onClick={onEditProfile}
         className='btn bg-blue-500 text-white px-4 py-2 rounded-lg mt-4'
       >
         Edit Profile
-      </Link>
+      </button>
     </div>
   );
 }

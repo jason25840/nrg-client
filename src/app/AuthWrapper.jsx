@@ -10,14 +10,14 @@ import useHasMounted from './hooks/useHasMounted';
 
 export default function AuthWrapper({ children }) {
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.auth);
+  const { status, user, isAuthenticated } = useSelector((state) => state.auth);
   const hasMounted = useHasMounted();
 
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  if (!hasMounted || status === 'idle' || status === 'loading') {
+  if (!hasMounted || (status === 'loading' && user === null)) {
     return (
       <>
         <Header />

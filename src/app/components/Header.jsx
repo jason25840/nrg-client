@@ -56,9 +56,14 @@ export default function Header() {
     router.push(`/signin?from=${pathname}`);
   };
 
-  const handleSignout = () => {
-    dispatch(signout());
-    router.push('/');
+  const handleSignout = async () => {
+    const result = await dispatch(signout());
+
+    if (signout.fulfilled.match(result)) {
+      router.push('/');
+    } else {
+      console.error('Signout failed:', result);
+    }
   };
 
   return (
@@ -66,36 +71,35 @@ export default function Header() {
       initial={{ opacity: 1, y: 0 }}
       animate={{ y: visible ? 0 : -100, opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className={`fixed top-0 left-0 w-full flex items-center justify-between px-6 py-3 z-[5000] transition-colors duration-300 ${
+      className={`fixed top-0 left-0 w-full flex items-center justify-between px-6 py-3 sm:py-4 md:py-5 z-[5000] transition-colors duration-300 ${
         scrolled ? 'backdrop-blur-md shadow-md' : ''
       }`}
     >
-      <div className='flex items-center'>
-        <Link href='/'>
-          <div className='relative flex items-center justify-center'>
-            <div className='absolute flex items-center justify-center'>
-              <div className='w-[150px] h-[150px] md:w-[120px] md:h-[120px] max-sm:w-[80px] max-sm:h-[80px] bg-[--accent-orange] rounded-full'></div>
-            </div>
+      {/*<div className='flex items-center'>*/}
+      <div className='relative flex items-center justify-center'>
+        <div className='absolute flex items-center justify-center'>
+          <div className='w-[150px] h-[150px] md:w-[120px] md:h-[120px] max-sm:w-[80px] max-sm:h-[80px] rounded-full'></div>
+        </div>
 
-            <div className='relative w-[150px] h-[150px] md:w-[120px] md:h-[120px] max-sm:w-[80px] max-sm:h-[80px]'>
-              <Image
-                src='/NRGLogo2.svg'
-                alt='NRG Connection Logo'
-                fill
-                sizes='(max-width: 640px) 100px, (max-width: 1024px) 160px, 200px'
-                className='object-contain'
-                priority
-              />
-            </div>
+        <Link href='/' className='block'>
+          <div className='relative w-[150px] h-[150px] md:w-[120px] md:h-[120px] max-sm:w-[80px] max-sm:h-[80px]'>
+            <Image
+              src='/NRGLines.png'
+              alt='NRG Lines Logo'
+              fill
+              sizes='(max-width: 640px) 100px, (max-width: 1024px) 160px, 200px'
+              className='object-contain'
+              priority
+            />
           </div>
         </Link>
       </div>
-
-      <div className='flex items-center justify-center'>
-        <h1 className='text-4xl md:text-5xl font-bold text-[--foreground-light] glow'>
-          NRG LINES
-        </h1>
-      </div>
+      {/*<div className='flex items-center justify-center'>
+          <h1 className='text-4xl md:text-5xl font-bold text-[--foreground-light] glow'>
+            NRG LINES
+          </h1>
+        </div>
+      </div>*/}
 
       {!isMobile ? (
         <div className='flex items-center gap-6'>

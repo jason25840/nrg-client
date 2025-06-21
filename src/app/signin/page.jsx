@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation'; // ⬅️ Removed useRouter
+import { useSearchParams } from 'next/navigation'; // ✅ Extract 'from' param and pass to Signin component
 import Signin from '../components/auth/Signin';
 
 export default function SigninPage() {

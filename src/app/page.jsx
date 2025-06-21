@@ -14,8 +14,9 @@ import { carouselItems } from './data/carouselData';
 import PageLayout from './components/ui/PageLayout';
 
 export default function Home() {
-  const [weather, setWeather] = useState(null);
+  const [weather, setWeather] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [activeModal, setActiveModal] = useState(null);
 
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -23,20 +24,55 @@ export default function Home() {
 
   const handleActiveModalClose = () => setActiveModal(null);
 
+  const locations = [
+    { name: 'Hinton', lat: 37.6749, lon: -80.8926 },
+    { name: 'Grandview', lat: 37.8315, lon: -81.0625 },
+    { name: 'Thurmond', lat: 37.9579, lon: -81.0782 },
+    { name: 'Fayette Station', lat: 38.0615, lon: -81.0818 },
+  ];
+
   useEffect(() => {
-    async function fetchWeather() {
-      const response = await getWeatherData(38.0689, -81.0825);
-      setWeather(response);
+    async function fetchAllWeather() {
+      const results = await Promise.all(
+        locations.map(async (loc) => {
+          const data = await getWeatherData(loc.lat, loc.lon);
+          return { ...data, name: loc.name };
+        })
+      );
+      setWeather(results);
       setLoading(false);
     }
-    fetchWeather();
+    fetchAllWeather();
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        weather && weather.length > 0 ? (prevIndex + 1) % weather.length : 0
+      );
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [weather]);
 
   return (
     <PageLayout>
       <div className='relative flex flex-col w-full overflow-hidden'>
+        {/* 🔹 Weather Section */}
+        <div className='relative z-20 w-full py-12'>
+          <div className='flex flex-col items-center justify-center w-full'>
+            <h2 className='text-2xl md:text-3xl font-bold text-black mb-6'>
+              NRG Weather Conditions
+            </h2>
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <WeatherCard weather={weather[currentIndex]} />
+            )}
+          </div>
+        </div>
+
         {/* 🔹 Welcome Section */}
-        <div className='relative z-20 w-full bg-gray-100 py-12 text-center'>
+        <div className='relative z-20 w-full py-12 text-center'>
           <h2 className='text-3xl md:text-4xl font-bold text-primary-blue mb-4'>
             Discover, Adventure, and Connect
           </h2>
@@ -53,39 +89,26 @@ export default function Home() {
             </a>
           </div>
           <Button
-            onClick={
-              () =>
-                isAuthenticated
-                  ? router.push('/dashboard')
-                  : router.push('/signin?from=/') // 🟢 redirect with fallback info
+            onClick={() =>
+              isAuthenticated
+                ? router.push('/dashboard')
+                : router.push('/signin?from=/')
             }
             variant='primary'
             className='animate-pulse'
           >
-            {isAuthenticated
-              ? 'Return to Dashboard'
-              : 'Let the Adventure Begin'}
+            {isAuthenticated ? 'Go to Dashboard' : 'Let the Adventure Begin'}
           </Button>
         </div>
 
         {/* 🔹 Carousel Section */}
-        <div className='relative z-20 w-full bg-gray-100 py-12'>
+        <div className='relative z-20 w-full py-12'>
           <div className='flex flex-col items-center justify-center w-full'>
             <Carousel
               items={carouselItems.map((item, index) => (
                 <Card key={index} card={item} index={index} />
               ))}
             />
-          </div>
-        </div>
-
-        {/* 🔹 Weather Section */}
-        <div className='relative z-20 w-full bg-gray-100 py-12'>
-          <div className='flex flex-col items-center justify-center w-full'>
-            <h2 className='text-2xl md:text-3xl font-bold text-black mb-6'>
-              NRG Weather Conditions
-            </h2>
-            {loading ? <p>Loading...</p> : <WeatherCard weather={weather} />}
           </div>
         </div>
 

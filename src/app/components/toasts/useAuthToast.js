@@ -7,16 +7,22 @@ export const useAuthToast = () => {
 
   return (action = 'like') => {
     toast.warn(
-      <div>
+      <div className='text-[var(--foreground-light)]'>
         <span>You must sign in to {action} this item.</span>
         <button
           onClick={() => router.push('/signin')}
-          className='text-primary-blue underline ml-1'
+          className='text-[var(--alert-red)] underline ml-1'
         >
           Sign in now
         </button>
       </div>,
-      { autoClose: 5000 }
+      {
+        autoClose: 5000,
+        style: {
+          background: 'var(--warning-orange)',
+          color: 'var(--foreground-dark)',
+        },
+      }
     );
   };
 };

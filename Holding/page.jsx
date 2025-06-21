@@ -10,7 +10,7 @@ export default function WeatherPage() {
 
   useEffect(() => {
     async function fetchWeather() {
-      const data = await getWeatherData(38.0689, -81.0825); // New River Gorge coords
+      const data = await getWeatherData(38.0689, -81.0825);
       setWeather(data);
       setLoading(false);
     }

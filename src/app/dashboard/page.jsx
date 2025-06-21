@@ -8,11 +8,13 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import PageLayout from '../components/ui/PageLayout';
 import ProfileSummary from './components/ProfileSummary';
+import ProfileForm from '../profile/components/ProfileForm';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import AdminPanel from './components/AdminPanel';
 import EventCard from '../event/components/EventCard';
 import ModalWithContent from '../components/ui/ModalWithContent';
 import Image from 'next/image';
+import { toast } from 'react-hot-toast';
 
 export default function Dashboard() {
   const dispatch = useDispatch();
@@ -22,10 +24,23 @@ export default function Dashboard() {
     (state) => state.profile
   );
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showProfileForm, setShowProfileForm] = useState(false);
+  const openProfileForm = () => setShowProfileForm(true);
+  const closeProfileForm = () => setShowProfileForm(false);
 
   useEffect(() => {
     if (isAuthenticated && user?._id && profileStatus === 'idle') {
       dispatch(fetchProfile(user._id));
+    }
+
+    if (
+      typeof window !== 'undefined' &&
+      window.location.search.includes('created=true')
+    ) {
+      toast.success('⛰️ Profile created! Your trail begins here.');
+      const url = new URL(window.location);
+      url.searchParams.delete('created');
+      window.history.replaceState({}, '', url.pathname);
     }
   }, [dispatch, isAuthenticated, user, profileStatus]);
 
@@ -88,8 +103,16 @@ export default function Dashboard() {
           className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
           whileHover={{ scale: 1.02 }}
         >
-          <ProfileSummary profile={profile} />
+          <ProfileSummary profile={profile} onEditProfile={openProfileForm} />
         </motion.div>
+
+        {!profile && (
+          <div className='text-sm text-center text-foreground-light mb-4 px-2'>
+            The more complete your trail of pursuits, lines, and links, the
+            better chance you'll connect with kindred explorers who roam the
+            Gorge like you.
+          </div>
+        )}
 
         {/* Saved Articles */}
         <motion.div
@@ -196,6 +219,13 @@ export default function Dashboard() {
           <ModalWithContent onClose={() => setSelectedEvent(null)}>
             <EventCard event={selectedEvent} user={user} isOwner={false} />
           </ModalWithContent>
+        )}
+
+        {showProfileForm && (
+          <ProfileForm
+            initialData={profile}
+            handleActiveModalClose={closeProfileForm}
+          />
         )}
       </div>
     </PageLayout>

@@ -28,7 +28,7 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
 
   const [showSocialMedia, setShowSocialMedia] = useState(false); // Toggle for optional section
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('submitting...', profileData);
 
@@ -44,35 +44,53 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
       !profileData.pursuits.length ||
       profileData.pursuits.some((p) => !p.pursuit || !p.level)
     ) {
-      alert('Please add at least one pursuit with both name and level.');
+      alert('Please add at least one pursuit with both name and skill level.');
       return;
     }
 
-    // Accomplishments are now optional; no validation needed
+    const isEditing = initialData && initialData._id; // Ensure a real profile exists
 
-    if (initialData) {
-      // Update existing profile
-      dispatch(
+    let result;
+    if (isEditing) {
+      result = await dispatch(
         updateProfile({
-          pursuits: profileData.pursuits,
-          accomplishments: profileData.accomplishments,
-          socialMediaLinks: profileData.socialMediaLinks,
+          userId: user._id,
+          profileData: {
+            pursuits: profileData.pursuits,
+            accomplishments: profileData.accomplishments.filter(
+              (a) => a.type.trim() !== '' && a.details.trim() !== ''
+            ),
+            socialMediaLinks: profileData.socialMediaLinks,
+          },
         })
       );
     } else {
-      // Create new profile
-      dispatch(
+      result = await dispatch(
         createProfile({
-          pursuits: profileData.pursuits,
-          accomplishments: profileData.accomplishments,
-          socialMediaLinks: profileData.socialMediaLinks,
+          userId: user._id,
+          profileData: {
+            pursuits: profileData.pursuits,
+            accomplishments: profileData.accomplishments.filter(
+              (a) => a.type.trim() !== '' && a.details.trim() !== ''
+            ),
+            socialMediaLinks: profileData.socialMediaLinks,
+          },
         })
       );
     }
 
-    if (handleActiveModalClose) {
-      handleActiveModalClose(); // ✅ Only call if defined
-    } // Close modal after submission
+    if (result.meta.requestStatus === 'fulfilled') {
+      const modalElement = modalRef.current;
+      if (modalElement && handleActiveModalClose) {
+        modalElement.classList.add('animate-bounce-out');
+        setTimeout(() => {
+          handleActiveModalClose();
+        }, 500); // delay to let animation finish
+      } else if (handleActiveModalClose) {
+        // Ensure modal closes even if ref is missing
+        handleActiveModalClose();
+      }
+    }
   };
 
   const hasMounted = useHasMounted();
@@ -83,11 +101,12 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
 
   return (
     <ModalWithForm
-      ref={modalRef}
+      modalRef={modalRef}
       title={initialData ? 'Edit Profile' : 'Create Profile'}
       onSubmit={handleSubmit}
       handleActiveModalClose={handleActiveModalClose}
       buttonText={initialData ? 'Update Profile' : 'Create Profile'}
+      className='transition-all duration-500'
     >
       {/* Pursuit Selector */}
       <PursuitSelector
@@ -140,8 +159,12 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
         className='mt-2 mb-6'
         disabled={
           profileData.accomplishments.length &&
-          !profileData.accomplishments[profileData.accomplishments.length - 1]
-            .type
+          (!profileData.accomplishments[
+            profileData.accomplishments.length - 1
+          ].type.trim() ||
+            !profileData.accomplishments[
+              profileData.accomplishments.length - 1
+            ].details.trim())
         }
         onClick={() =>
           setProfileData({
@@ -153,7 +176,7 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
           })
         }
       >
-        Add An Accomplishment
+        Add Another Accomplishment
       </Button>
 
       {/* Social Media Links Toggle */}

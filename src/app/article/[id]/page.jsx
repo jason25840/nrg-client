@@ -35,7 +35,7 @@ export default function ArticlePage() {
       <div className='container mx-auto py-10'>
         <button
           onClick={() => router.push(from)}
-          className='text-primary hover:underline'
+          className='text-[--ember-orange] hover:underline'
         >
           ← Go Back
         </button>

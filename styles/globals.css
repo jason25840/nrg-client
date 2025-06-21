@@ -77,22 +77,43 @@
 
 /* 🌍 Root Theme Colors */
 :root {
-  /* Background and Text */
-  --background-light: #f1f3f5; /* Soft gray background */
-  --background-dark: #0d0d0d; /* Deep dark mode */
-  --foreground-light: #111111; /* Deep readable black */
-  --foreground-dark: #ffffff; /* Crisp white */
+  /* 🌿 Neutrals */
+  --background-light: #f1f3f5;
+  --background-dark: #0d0d0d;
+  --foreground-light: #111111;
+  --foreground-dark: #ffffff;
   --border-light: #c1c1c1;
   --border-dark: #333333;
 
-  /* Brand Colors */
-  --primary-blue: #2c6e91; /* Finalized single blue */
-  --primary-green: #387f6b; /* Rugged forest green */
-  --accent-pink: #94475a; /* Adventure earthy pink */
-  --accent-orange: #b76d39; /* Rich sunset orange */
+  /* 🎯 Core Brand Colors */
+  --primary-blue: #2c6e91; /* NRG Blue Ridge */
+  --primary-green: #387f6b; /* Forest Gear Green */
+  --accent-pink: #94475a; /* Dusty Canyon Rose */
+  --accent-orange: #b76d39; /* Sunset Carabiner */
 
-  --highlight-yellow-light: #f5e697; /* Soft highlight for light mode */
-  --highlight-yellow-dark: #f0c929; /* Strong highlight for dark mode */
+  /* 🌟 Highlights */
+  --highlight-yellow-light: #f5e697; /* Sandstone Highlight */
+  --highlight-yellow-dark: #f0c929; /* Lantern Glow */
+
+  /* 🔥 Validation / Alerts */
+  --alert-red: #b33a3a; /* Campfire Ember */
+  --alert-red-light: #e57373; /* Red Clay Wash */
+  --success-green: #58a27c; /* Mossy OK */
+  --warning-orange: #e29a3b; /* Canyon Caution */
+  --info-blue: #4b8cad; /* River Signal */
+
+  /* 🌄 Brighter Expanded Accents */
+  --sky-blue: #6ca9c7; /* Open Sky */
+  --meadow-green: #69b195; /* Meadow Mint */
+  --blush-rose: #c06c7b; /* Trail Blush */
+  --ember-orange: #d9844f; /* Ember Spark */
+  --sun-yellow: #ffe380; /* Morning Pack */
+
+  /* 🧵 Muted Background Options */
+  --tan-beige: #e8dfcd; /* Trail Dust */
+  --slate-gray: #6e6e6e; /* Stone Grip */
+  --mud-brown: #8e6b4c; /* Boot Tread */
+  --pine-dark: #2e4f41; /* Deep Pine */
 
   /* Default Mode */
   --background: var(--background-light);

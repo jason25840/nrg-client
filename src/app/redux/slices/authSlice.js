@@ -184,7 +184,7 @@ const authSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.user = action.payload.user; // ✅ because 'user' is nested
+        state.user = action.payload; // ✅ Correct!
         state.isAuthenticated = true;
         state.error = null;
       })

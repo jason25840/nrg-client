@@ -33,7 +33,7 @@ export default function EventDetailPage() {
       <div className='container mx-auto py-10 flex flex-col items-center text-center'>
         <button
           onClick={() => router.push(from)}
-          className='text-primary hover:underline'
+          className='text-[--ember-orange] hover:underline'
         >
           ← Go Back
         </button>

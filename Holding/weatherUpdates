@@ -1,6 +1,6 @@
 weather api: https://openweathermap.org/
 
-When adding m ore weather locations, create variables or an array for each location.
+When adding more weather locations, create variables or an array for each location.
 const LOCATIONS = [
   { name: 'New River Gorge', lat: 37.8707, lon: -81.0531 },
   { name: 'Another Location', lat: 38.1234, lon: -82.5678 }, // Example
