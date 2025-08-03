@@ -12,7 +12,7 @@ import EventForm from './components/EventForm';
 import EventCard from './components/EventCard';
 import PageLayout from '../components/ui/PageLayout';
 
-export default function Event({ handleActiveModalClose }) {
+export default function EventPage() {
   const dispatch = useDispatch();
   const { events, loading, error } = useSelector((state) => state.events);
   const { user } = useSelector((state) => state.auth);
