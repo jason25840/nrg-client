@@ -15,6 +15,7 @@ import { Card } from './components/ui/Card';
 import { carouselItems } from './data/carouselData';
 import PageLayout from './components/ui/PageLayout';
 import Landing from './components/Landing'; // 👈 New landing component
+//Work on creative design for Page and Layout
 
 export default function Home() {
   const [weather, setWeather] = useState([]);
