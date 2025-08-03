@@ -40,7 +40,7 @@ export default function ArticleCreate({ article, onClose }) {
 
     try {
       if (article) {
-        await axios.put(`/api/articles/${article.id}`, formData);
+        await axios.put(`/api/articles/${article._id}`, formData);
       } else {
         await axios.post('/api/articles', formData);
       }

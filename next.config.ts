@@ -18,6 +18,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.gravatar.com", // ✅ Fix for gravatar issue
       },
+      {
+        protocol: "https",
+        hostname: "www.shutterstock.com",
+      },
     ],
   },
   reactStrictMode: true, // ✅ Ensures best practices

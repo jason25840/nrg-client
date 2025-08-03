@@ -8,7 +8,6 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import PageLayout from '../components/ui/PageLayout';
 import ProfileSummary from './components/ProfileSummary';
-import ProfileForm from '../profile/components/ProfileForm';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import AdminPanel from './components/AdminPanel';
 import EventCard from '../event/components/EventCard';
@@ -24,9 +23,6 @@ export default function Dashboard() {
     (state) => state.profile
   );
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [showProfileForm, setShowProfileForm] = useState(false);
-  const openProfileForm = () => setShowProfileForm(true);
-  const closeProfileForm = () => setShowProfileForm(false);
 
   useEffect(() => {
     if (isAuthenticated && user?._id && profileStatus === 'idle') {
@@ -103,7 +99,7 @@ export default function Dashboard() {
           className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
           whileHover={{ scale: 1.02 }}
         >
-          <ProfileSummary profile={profile} onEditProfile={openProfileForm} />
+          <ProfileSummary profile={profile} />
         </motion.div>
 
         {!profile && (
@@ -140,33 +136,6 @@ export default function Dashboard() {
                 No saved articles yet.{' '}
                 <Link href='/article' className='text-primary-blue underline'>
                   Explore articles
-                </Link>
-              </p>
-            )}
-          </ul>
-        </motion.div>
-
-        {/* Projects */}
-        <motion.div
-          className='bg-background-light text-foreground-light p-4 rounded-lg shadow-md'
-          whileHover={{ scale: 1.02 }}
-        >
-          <h3 className='text-lg md:text-xl font-semibold mb-2'>My Projects</h3>
-          <ul className='text-sm md:text-base'>
-            {profile?.projects?.length > 0 ? (
-              profile.projects.map((project, index) => (
-                <li key={index}>
-                  {project.name} - {project.description}
-                </li>
-              ))
-            ) : (
-              <p>
-                No projects added yet.{' '}
-                <Link
-                  href='/add-project'
-                  className='text-primary-blue underline'
-                >
-                  Add one now
                 </Link>
               </p>
             )}
@@ -219,13 +188,6 @@ export default function Dashboard() {
           <ModalWithContent onClose={() => setSelectedEvent(null)}>
             <EventCard event={selectedEvent} user={user} isOwner={false} />
           </ModalWithContent>
-        )}
-
-        {showProfileForm && (
-          <ProfileForm
-            initialData={profile}
-            handleActiveModalClose={closeProfileForm}
-          />
         )}
       </div>
     </PageLayout>

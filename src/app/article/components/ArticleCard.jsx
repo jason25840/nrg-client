@@ -62,13 +62,13 @@ export default function ArticleCard({
         <div className='flex justify-between items-center mt-4'>
           {/* ✅ Like Button */}
           <button
-            className='flex items-center gap-2 hover:text-red-500'
+            className='flex items-center gap-1 md:gap-2 hover:text-red-500'
             onClick={(e) => onLike(e, article._id)}
           >
             {hasLiked ? (
-              <FaHeart size={20} className='text-[--accent-pink]' />
+              <FaHeart className='w-4 h-4 md:w-5 md:h-5 text-[--accent-pink]' />
             ) : (
-              <FaRegHeart size={20} />
+              <FaRegHeart className='w-4 h-4 md:w-5 md:h-5' />
             )}
             <span>{likeCount}</span>
           </button>
@@ -77,7 +77,7 @@ export default function ArticleCard({
           {likedUsers.length > 0 && (
             <div className='relative'>
               <button
-                className='text-sm  flex items-center'
+                className='text-xs md:text-sm flex items-center gap-1'
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowLikedUsers(!showLikedUsers);
@@ -85,13 +85,14 @@ export default function ArticleCard({
               >
                 {showLikedUsers ? (
                   <>
-                    Hide Likes <FaChevronUp className='ml-1' />
+                    Hide Likes{' '}
+                    <FaChevronUp className='w-3 h-3 md:w-4 md:h-4 ml-1' />
                   </>
                 ) : (
                   <>
                     {likedUsers.length}{' '}
                     {likedUsers.length === 1 ? 'Like' : 'Likes'}
-                    <FaChevronDown className='ml-1' />
+                    <FaChevronDown className='w-3 h-3 md:w-4 md:h-4 ml-1' />
                   </>
                 )}
               </button>
@@ -112,13 +113,13 @@ export default function ArticleCard({
 
           {/* ✅ Bookmark Button */}
           <button
-            className='flex items-center gap-2 hover:text-blue-500'
+            className='flex items-center gap-1 md:gap-2 hover:text-blue-500'
             onClick={(e) => onBookmark(e, article._id)}
           >
             {hasBookmarked ? (
-              <FaBookmark size={20} className='text-[--accent-pink]' />
+              <FaBookmark className='w-4 h-4 md:w-5 md:h-5 text-[--accent-pink]' />
             ) : (
-              <FaRegBookmark size={20} />
+              <FaRegBookmark className='w-4 h-4 md:w-5 md:h-5' />
             )}
           </button>
 

@@ -1,5 +1,7 @@
 'use client';
 
+// Landing-focused version of homepage — full app UI is preserved but temporarily disabled
+
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
@@ -12,6 +14,7 @@ import { Carousel } from './components/ui/Carousel';
 import { Card } from './components/ui/Card';
 import { carouselItems } from './data/carouselData';
 import PageLayout from './components/ui/PageLayout';
+import Landing from './components/Landing'; // 👈 New landing component
 
 export default function Home() {
   const [weather, setWeather] = useState([]);
@@ -56,8 +59,11 @@ export default function Home() {
 
   return (
     <PageLayout>
+      {/*<Landing />
+
+      💤 Original homepage UI preserved below — temporarily disabled for landing-focused version*/}
+
       <div className='relative flex flex-col w-full overflow-hidden'>
-        {/* 🔹 Weather Section */}
         <div className='relative z-20 w-full py-12'>
           <div className='flex flex-col items-center justify-center w-full'>
             <h2 className='text-2xl md:text-3xl font-bold text-black mb-6'>
@@ -71,7 +77,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 🔹 Welcome Section */}
         <div className='relative z-20 w-full py-12 text-center'>
           <h2 className='text-3xl md:text-4xl font-bold text-primary-blue mb-4'>
             Discover, Adventure, and Connect
@@ -97,11 +102,10 @@ export default function Home() {
             variant='primary'
             className='animate-pulse'
           >
-            {isAuthenticated ? 'Go to Dashboard' : 'Let the Adventure Begin'}
+            {isAuthenticated ? 'Go to Dashboard' : 'Signin'}
           </Button>
         </div>
 
-        {/* 🔹 Carousel Section */}
         <div className='relative z-20 w-full py-12'>
           <div className='flex flex-col items-center justify-center w-full'>
             <Carousel
@@ -112,7 +116,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ✅ Render Modals Conditionally 
         {activeModal === 'signin' && (
           <Signin
             handleActiveModalClose={handleActiveModalClose}
@@ -122,7 +125,7 @@ export default function Home() {
 
         {activeModal === 'signup' && (
           <Signup handleActiveModalClose={handleActiveModalClose} />
-        )}*/}
+        )}
       </div>
     </PageLayout>
   );

@@ -18,6 +18,7 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
   const [profileData, setProfileData] = useState(() => ({
     pursuits: initialData?.pursuits || [],
     accomplishments: initialData?.accomplishments || [],
+    projects: initialData?.projects || [],
     socialMediaLinks: initialData?.socialMediaLinks || {
       instagram: '',
       tiktok: '',
@@ -60,6 +61,9 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
             accomplishments: profileData.accomplishments.filter(
               (a) => a.type.trim() !== '' && a.details.trim() !== ''
             ),
+            projects: profileData.projects.filter(
+              (p) => p.type.trim() !== '' && p.details.trim() !== ''
+            ),
             socialMediaLinks: profileData.socialMediaLinks,
           },
         })
@@ -72,6 +76,9 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
             pursuits: profileData.pursuits,
             accomplishments: profileData.accomplishments.filter(
               (a) => a.type.trim() !== '' && a.details.trim() !== ''
+            ),
+            projects: profileData.projects.filter(
+              (p) => p.type.trim() !== '' && p.details.trim() !== ''
             ),
             socialMediaLinks: profileData.socialMediaLinks,
           },
@@ -177,6 +184,61 @@ export default function ProfileForm({ initialData, handleActiveModalClose }) {
         }
       >
         Add Another Accomplishment
+      </Button>
+
+      {/* Projects */}
+      <label className='block text-lg font-semibold mt-6 mb-2'>
+        Current Projects
+      </label>
+      {profileData.projects.map((item, index) => (
+        <div
+          key={index}
+          className='relative border border-gray-300 p-4 mb-4 rounded-lg'
+        >
+          <AccomplishmentForm
+            value={item}
+            onChange={(updated) => {
+              const updatedProjects = [...profileData.projects];
+              updatedProjects[index] = { ...item, ...updated };
+              setProfileData({
+                ...profileData,
+                projects: updatedProjects,
+              });
+            }}
+          />
+          <Button
+            variant='danger'
+            onClick={() => {
+              const updated = profileData.projects.filter(
+                (_, i) => i !== index
+              );
+              setProfileData({ ...profileData, projects: updated });
+            }}
+            className='absolute top-2 right-2 text-xs'
+          >
+            Remove
+          </Button>
+        </div>
+      ))}
+      <Button
+        type='button'
+        variant='secondary'
+        className='mt-2 mb-6'
+        disabled={
+          profileData.projects.length &&
+          (!profileData.projects[profileData.projects.length - 1].type.trim() ||
+            !profileData.projects[
+              profileData.projects.length - 1
+            ].details.trim())
+        }
+        onClick={() =>
+          setProfileData({
+            ...profileData,
+            projects: [...profileData.projects, { type: '', details: '' }],
+          })
+        }
+      >
+        Add Another Project
       </Button>
 
       {/* Social Media Links Toggle */}

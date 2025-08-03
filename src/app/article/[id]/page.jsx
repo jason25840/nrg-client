@@ -1,5 +1,6 @@
 'use client';
 
+import ReactMarkdown from 'react-markdown';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import PageLayout from '../../components/ui/PageLayout';
@@ -47,13 +48,13 @@ export default function ArticlePage() {
         </p>
 
         <img
-          src={article.image || '/images/placeholder.png'}
+          src={article.image || '/images/NRG_Image_Placeholder.png'}
           alt={article.title || 'NRGLines Placeholder'}
           className='w-full h-96 object-cover rounded-xl mt-6'
         />
 
-        <div className='mt-6 text-lg leading-relaxed text-foreground'>
-          {article.content}
+        <div className='mt-8 prose prose-neutral max-w-none text-base sm:text-lg md:text-xl leading-relaxed md:leading-loose'>
+          <ReactMarkdown>{article.content}</ReactMarkdown>
         </div>
       </div>
     </PageLayout>

@@ -42,11 +42,11 @@ export default function EventCard({
     <div className='p-4 bg-white shadow-md rounded-lg'>
       <div className='cursor-pointer' onClick={handleNavigate}>
         <img
-          src={image || '/images/placeholder.png'}
+          src={image || '/images/NRG_Image_Placeholder.png'}
           alt={title}
           onError={(e) => {
             e.target.onerror = null; // prevent infinite loop
-            e.target.src = '/images/placeholder.png';
+            e.target.src = '/images/NRG_Image_Placeholder.png';
           }}
           className='w-full h-48 object-cover rounded-md'
         />
