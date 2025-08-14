@@ -53,7 +53,11 @@ export default function Header() {
   ].filter((item) => item.link !== pathname);
 
   const handleSignInClick = () => {
-    router.push(`/signin?from=${pathname}`);
+    if (!isAuthenticated) {
+      router.push(`/signin?from=${pathname}`);
+    } else {
+      handleSignout();
+    }
   };
 
   const handleSignout = async () => {
@@ -71,65 +75,84 @@ export default function Header() {
       initial={{ opacity: 1, y: 0 }}
       animate={{ y: visible ? 0 : -100, opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className={`fixed top-0 left-0 w-full flex items-center justify-between px-6 py-2 sm:py-3 md:py-4 z-[5000] transition-colors duration-300 ${
+      className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 py-2 sm:py-3 md:py-4 z-[5000] transition-colors duration-300 ${
         scrolled ? 'backdrop-blur-md shadow-md' : ''
       }`}
     >
-      {/*<div className='flex items-center'>*/}
-      <div className='relative flex items-center justify-center'>
-        <div className='absolute flex items-center justify-center'>
-          <div className='w-[150px] h-[150px] md:w-[120px] md:h-[120px] max-sm:w-[80px] max-sm:h-[80px] rounded-full'></div>
-        </div>
-
-        <Link href='/' className='block'>
-          <div className='relative w-[200px] h-[130px] md:w-[170px] md:h-[110px] max-sm:w-[120px] max-sm:h-[90px] scale-[1.2] -my-2'>
-            <Image
-              src='/NRGLines_FV.PNG'
-              alt='NRG Lines Logo'
-              fill
-              sizes='(max-width: 640px) 100px, (max-width: 1024px) 160px, 200px'
-              className='object-contain'
-              priority
-            />
-          </div>
-        </Link>
-      </div>
-      {/*<div className='flex items-center justify-center'>
-          <h1 className='text-4xl md:text-5xl font-bold text-[--foreground-light] glow'>
-            NRG LINES
-          </h1>
-        </div>
-      </div>*/}
-
       {!isMobile ? (
-        <div className='flex items-center gap-6'>
-          <div className='relative inline-flex h-12 lg:h-14 md:h-10 overflow-hidden rounded-full px-6 py-2 border-[2px] border-transparent animate-border-glow shadow-md'>
-            <span className='absolute inset-0 rounded-full border-[2px] border-transparent animate-border-glow' />
-            <span className='relative z-10 flex items-center space-x-6 text-lg font-semibold text-[--foreground-light]'>
-              {navItems.map((navItem, idx) => (
-                <Link
-                  key={idx}
-                  href={navItem.link}
-                  className='relative transition-all duration-300 hover:underline focus:underline'
-                >
-                  {navItem.name}
-                </Link>
-              ))}
-            </span>
+        <div className='flex items-center w-full'>
+          {/* Left: Logo */}
+          <div className='flex-1 flex justify-start'>
+            <Link href='/' className='block'>
+              <div className='relative w-[200px] h-[80px] md:w-[240px] md:h-[100px] max-sm:w-[100px] max-sm:h-[40px]'>
+                <Image
+                  src='/NRGLines_FV.PNG'
+                  alt='NRG Lines Logo'
+                  fill
+                  sizes='(max-width: 640px) 100px, (max-width: 1024px) 160px, 200px'
+                  className='object-contain'
+                  priority
+                />
+              </div>
+            </Link>
           </div>
 
-          {!isAuthenticated && pathname !== '/' ? (
-            <Button onClick={handleSignInClick} variant='primary'>
-              Sign In
+          {/* Center: Nav links */}
+          <nav className='basis-1/3 md:basis-2/5 flex justify-center space-x-12 lg:space-x-10 md:space-x-6'>
+            {navItems.map((navItem, idx) => (
+              <Link
+                key={idx}
+                href={navItem.link}
+                className='px-2 text-lg lg:text-lg md:text-base sm:text-sm font-semibold text-[--foreground-light] hover:text-[--accent-pink] transition-colors'
+              >
+                {navItem.name}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right: Auth button */}
+          <div className='flex-1 flex justify-end pr-5 lg:pr-20'>
+            <Button
+              onClick={handleSignInClick}
+              variant='primary'
+              className='pr-5'
+            >
+              {!isAuthenticated ? 'Sign In' : 'Sign Out'}
             </Button>
-          ) : isAuthenticated ? (
-            <Button onClick={handleSignout} variant='primary'>
-              Sign Out
-            </Button>
-          ) : null}
+          </div>
         </div>
       ) : (
-        <HamburgerMenu navItems={navItems} />
+        <div className='flex items-center w-full px-2'>
+          {/* Left: Logo */}
+          <div className='flex-1 flex justify-start'>
+            <Link href='/' className='block'>
+              <div className='relative w-[100px] h-[30px]'>
+                <Image
+                  src='/NRGLines_FV.PNG'
+                  alt='NRG Lines Logo'
+                  fill
+                  sizes='100px'
+                  className='object-contain'
+                  priority
+                />
+              </div>
+            </Link>
+          </div>
+
+          {/* Right: Combined Hamburger + Sign In/Out */}
+          <div className='flex-1 flex justify-end'>
+            <HamburgerMenu
+              navItems={[
+                ...navItems,
+                {
+                  name: isAuthenticated ? 'Sign Out' : 'Sign In',
+                  link: isAuthenticated ? '#' : `/signin?from=${pathname}`,
+                  onClick: isAuthenticated ? handleSignout : undefined,
+                },
+              ]}
+            />
+          </div>
+        </div>
       )}
     </motion.header>
   );
